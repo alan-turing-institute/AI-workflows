@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
       - name: Install singularity
         run: |
           sudo apt-get update
@@ -33,6 +38,7 @@ jobs:
           ./mconfig
           make -C builddir
           sudo make -C builddir install
+
       - name: Build pytorch GAN zoo
         working-directory: workflows/pytorch_GAN_zoo/
         run: ./build.sh
