@@ -10,9 +10,9 @@ jobs:
     steps:
       - name: Install singularity
         run: |
-          apt-get update
+          sudo apt-get update
           # Install singularity dependencies
-          apt-get install -y \
+          sudo apt-get install -y \
           build-essential \
           libssl-dev \
           uuid-dev \
@@ -32,7 +32,7 @@ jobs:
           cd singularity-${VERSION}
           ./mconfig
           make -C builddir
-          make -C builddir install
+          sudo make -C builddir install
       - name: Build pytorch GAN zoo
         working-directory: workflows/pytorch_GAN_zoo/
-        run: build.sh
+        run: ./build.sh
