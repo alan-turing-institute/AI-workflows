@@ -1,0 +1,44 @@
+---
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install singularity
+        run: |
+          sudo apt-get update
+          # Install singularity dependencies
+          sudo apt-get install -y \
+          build-essential \
+          libssl-dev \
+          uuid-dev \
+          libgpgme11-dev \
+          squashfs-tools \
+          libseccomp-dev \
+          wget \
+          pkg-config \
+          git \
+          cryptsetup \
+          golang
+          # Get singularity release
+          export VERSION=3.8.0
+          wget https://github.com/hpcng/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
+          tar -xzf singularity-${VERSION}.tar.gz
+          # Build/install singularity
+          cd singularity-${VERSION}
+          ./mconfig
+          make -C builddir
+          sudo make -C builddir install
+
+      - name: Build pytorch GAN zoo
+        working-directory: workflows/pytorch_GAN_zoo/
+        run: ./build.sh

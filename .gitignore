@@ -1,0 +1,5 @@
+# Singularity image files
+*.sif
+
+# Vagrant directory
+.vagrant

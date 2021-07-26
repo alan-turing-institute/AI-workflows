@@ -1,0 +1,46 @@
+---
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  markdown_lint:
+    name: "Lint Markdown"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+
+      - name: Install mdl
+        run: gem install mdl
+
+      - name: Lint markdown
+        run: mdl --style .mdl_style.rb ./
+
+  markdown_link_check:
+    name: "Check Markdown links"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Check links
+        uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
+        with:
+          use-verbose-mode: "yes"
+
+  shellcheck:
+    name: "Check shell scripts"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@1.1.0
