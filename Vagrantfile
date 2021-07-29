@@ -5,10 +5,14 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "./", "/vagrant"
 
-   config.vm.provider "virtualbox" do |vb|
-     vb.memory = "8192"
-     vb.cpus = "4"
-   end
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 8192
+    vb.cpus = 4
+  end
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.cpus = 4
+    libvirt.memory = 8192
+  end
 
   config.vm.provision "shell", inline: <<-SHELL
     # Install singularity dependencies
