@@ -40,10 +40,49 @@ the host GPU may be used. You will also need to select a singularity app, using
 the `--app` flag to select the appropriate CUDA version. The available apps are
 `cu101`, `cu102`, and `cu111` for CUDA 10.1, 10.2 and 11.1 respectively.
 
-For example, to pre-process the celeba dataset and train a PGAN model on a host
+For example, to pre-process the dtd dataset and train a PGAN model on a host
 with CUDA 10.2 you could run the following commands.
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py celeba_cropped <path to celeba dataset>/img_align_celeba/ -o celeba
-singularity exec pytorch_GAN_zoo.sif --nv --app cu102 train.py PGAN -c config_celeba_cropped.json --restart -n celeba_cropped
+singularity exec pytorch_GAN_zoo.sif datasets.py dtd <path to dtd dataset>/images/
+singularity exec pytorch_GAN_zoo.sif --nv --app cu102 train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
 ```
+
+### Models
+
+Here are examples showing how to use this container to train a PGAN model using
+the DTD and CIFAR-10 datasets.
+
+See the [datasets directory](../../datasets/) for scripts to fetch these
+datasets.
+
+In each example the `--restart` flag is used so that checkpoints are
+periodically written during the training. The `--no_vis` flag is used to disable
+visdom visualisations.
+
+#### DTD
+
+The DTD dataset requires no preprocessing, so the datasets script simply creates
+a configuration file.
+
+```bash
+python datasets.py dtd <path to dtd>/images
+python train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+```
+
+Where `<path to dtd>` is the path of the directory extracted from the dtd
+archive. This directory contains the subdirectories iamges, imdb and labels.
+
+#### CIFAR-10
+
+When training a model with the CIFAR-10 dataset some preprocessing is required.
+A processed dataset will be written to a directory delcared using the `-o` flag,
+`cifar-10` n this example.
+
+```bash
+python datasets.py cifar10 <path to cifar-10> -o cifar10
+python train.py -c config_cifar10.json --restart --no_vis -n cifar10
+```
+
+Where `<path to cifar-10>` is the path of the directory containing the pickle
+files named `data_batch_{1..5}`.
