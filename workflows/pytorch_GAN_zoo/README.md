@@ -44,8 +44,8 @@ For example, to pre-process the dtd dataset and train a PGAN model on a host
 with CUDA 10.2 you could run the following commands.
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py dtd <path to dtd dataset>/images/
-singularity exec pytorch_GAN_zoo.sif --nv --app cu102 train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py dtd <path to dtd dataset>/images/
+singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
 ```
 
 ### Models
@@ -68,8 +68,8 @@ The DTD dataset requires no preprocessing, so the datasets script simply creates
 a configuration file.
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
-singularity exec pytorch_GAN_zoo.sif --nv --app cu102 train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
+singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
 ```
 
 Where `<path to dtd>` is the path of the directory extracted from the dtd
@@ -82,8 +82,8 @@ A processed dataset will be written to a directory delcared using the `-o` flag,
 `cifar-10` n this example.
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
-singularity exec pytorch_GAN_zoo.sif --nv --app cu102 train.py -c config_cifar10.json --restart --no_vis -n cifar10
+singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
+singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
 ```
 
 Where `<path to cifar-10>` is the path of the directory containing the pickle
