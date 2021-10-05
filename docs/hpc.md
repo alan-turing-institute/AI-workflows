@@ -1,7 +1,5 @@
 # HPC
 
-## SLURM
-
 ## Nvidia SMI
 
 When using as system with an Nvidia GPU, the `nvidia-smi` utility will likely be
@@ -52,3 +50,25 @@ kill $gpu_watch_pid
 
 ...
 ```
+
+## Slurm
+
+When running these workflows on HPC you will most likely use the
+[Slurm](https://www.schedmd.com/) scheduler to submit, monitor and manage your
+jobs.
+
+The Slurm website provide a users
+[tutorial](https://slurm.schedmd.com/tutorials.html) and
+[documentation](https://slurm.schedmd.com/documentation.html) which have
+comprehensive detail of Slurm and its commands.
+
+In particular interest to users are
+
+- [Slurm command man pages](https://slurm.schedmd.com/man_index.html)
+- [Slurm command summary cheat
+  sheet](https://slurm.schedmd.com/pdfs/summary.pdf)
+- [Array support overview](https://slurm.schedmd.com/job_array.html)
+
+This section does not aim to be a comprehensive guide to Slurm, or even a brief
+introduction. Instead, it is intended to provide suggestions and a template for
+running this projects workflows on a cluster with Slurm.
