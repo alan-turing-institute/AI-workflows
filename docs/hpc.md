@@ -76,6 +76,24 @@ running this projects workflows on a cluster with Slurm.
 
 ### Requesting GPUs
 
+To request GPUs for a job in Slurm you may use the [Generic Resource
+(GRES)](https://slurm.schedmd.com/gres.html#Running_Jobs) plugin. The precise
+details of this will depend on the cluster you are using (for example
+requesting a particular model of GPU), however in most cases you will be able
+to request `n` GPUs with the flag `--gres=gpu:n`. For example
+
+```bash
+$ srun --gres=gpu:1 my_program
+
+$ sbatch --gres=gpu:4 script.sh
+```
+
+Or in a batch script
+
+```bash
+##SLURM --gres=gpu:1
+```
+
 ### Benchmarking
 
 A rudimentary way to monitor performance is to measure how long a given task
@@ -163,8 +181,8 @@ The environment variables can be used in your commands. For example
 my_program -n $SLURM_ARRAY_TASK_ID -o output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 ```
 
-with the same submission command would execute the following commands (one in
-each job)
+with the same `sbatch` command as before, the following commands would be
+executed in your jobs (one in each job)
 
 - `my_program -n 0 -o output_42_0`
 - `my_program -n 4 -o output_42_4`
