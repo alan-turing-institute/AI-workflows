@@ -78,6 +78,20 @@ running this projects workflows on a cluster with Slurm.
 
 ### Benchmarking
 
+A rudimentary way to monitor performance is to measure how long a given task
+takes to complete. One way to do achieve this, if the software you are running
+provides no other way, is to run the `date` command before and after your
+program.
+
+```bash
+date --iso-8601=seconds --utc
+$command
+```
+
+The flag and parameter `--iso-8601=seconds` ensures the output is in the ISO
+8601 format with precision up to and including seconds. The `--utc` flag means
+that the time will be printed in Coordinated Universal Time.
+
 ### Using scratch space
 
 ### Repeated runs (job arrays)
