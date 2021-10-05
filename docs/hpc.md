@@ -113,8 +113,6 @@ that the time will be printed in Coordinated Universal Time.
 
 The programs start and end times will then be recorded in the STDOUT file.
 
-### Using scratch space
-
 ### Repeated runs (job arrays)
 
 If you are assessing a systems performance you will likely want to repeat the
@@ -188,5 +186,54 @@ executed in your jobs (one in each job)
 - `my_program -n 4 -o output_42_4`
 - `my_program -n 8 -o output_42_8`
 - `my_program -n 12 -o output_42_12`
+
+### Using scratch space
+
+Most HPC systems will offer some sort of fast, temporal and typically on-node,
+storage such as NVMe SSDs. In calculations where reading or writing data is a
+bottleneck, using this storage will be key to optimising performance.
+
+The details of this scratch space will differ between HPC system and changes
+will need to be made when transferring workflows between systems. However, a
+combination of templating and singularity binds can make these adjustments less
+tedious and more robust.
+
+The following snippet shows how this may be done.
+
+```bash
+# Path to scratch disk on host
+HOST_SCRATCH_PATH=/scratch
+# Path to input data on host
+INPUT_DATA=/path/to/input/data
+# Get name of input data directory
+INPUT_DIR=$(basename $INPUT_DATA)
+# Path to place output data on host
+OUTPUT_DIR=/path/to/output/dir
+
+# Create a directory on scratch disk for this job
+JOB_SCRATCH_PATH= $HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+mkdir -p $JOB_SCRATCH_PATH
+
+# Copy input data to scratch directory
+cp -r $INPUT_DATA $JOB_SCRATCH_PATH
+
+# Make output data directory
+mkdir -p $JOB_SCRATCH_PATH/output
+
+# Run the application
+singularity run --bind $JOB_SCRATCH_PATH:/scratch_mount --nv my_container.sif --input /scratch_mount/$INPUT_DIR --output /scratch_mount/output/
+
+# Copy output
+cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+
+# Clean up
+rm -rf $JOB_SCRATCH_PATH
+```
+
+This example uses array job id and array task id to reduce the possibility of a
+name clash when creating a directory on the scratch disk and when copying
+outputs back.  Ideally each job will be given a scratch directory in a unique
+namespace so there is no possibility of file or directory names clashing
+between different jobs.
 
 ### Template
