@@ -86,11 +86,14 @@ program.
 ```bash
 date --iso-8601=seconds --utc
 $command
+date --iso-8601=seconds --utc
 ```
 
 The flag and parameter `--iso-8601=seconds` ensures the output is in the ISO
 8601 format with precision up to and including seconds. The `--utc` flag means
 that the time will be printed in Coordinated Universal Time.
+
+The programs start and end times will then be recorded in the STDOUT file.
 
 ### Using scratch space
 
