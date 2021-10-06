@@ -43,4 +43,4 @@ jobs:
         working-directory: workflows/pytorch_GAN_zoo/
         run: |
           id
-          ./build.sh
+          sudo ./build.sh
