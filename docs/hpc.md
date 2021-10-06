@@ -84,8 +84,10 @@ to request `n` GPUs with the flag `--gres=gpu:n`. For example
 
 ```bash
 $ srun --gres=gpu:1 my_program
+Submitted batch job 42
 
 $ sbatch --gres=gpu:4 script.sh
+Submitted batch job 43
 ```
 
 Or in a batch script
@@ -150,13 +152,13 @@ likely be more convenient than implementing your own solution.
 Within your batch script you will have access to the following environment
 variables
 
-| environment variable      | value                    |
-|---------------------------|--------------------------|
-| `SLURM_ARRAY_JOB_ID`      | job id of the first task |
-| `SLURM_ARRAY_TASK_ID`     | current task index       |
-| `SLURM_ARRAY_TASK_COUNT ` | total number of tasks    |
-| `SLURM_ARRAY_TASK_MAX`    | the highest index value  |
-| `SLURM_ARRAY_TASK_MIN`    | the lowest index value   |
+| environment variable     | value                    |
+|--------------------------|--------------------------|
+| `SLURM_ARRAY_JOB_ID`     | job id of the first task |
+| `SLURM_ARRAY_TASK_ID`    | current task index       |
+| `SLURM_ARRAY_TASK_COUNT` | total number of tasks    |
+| `SLURM_ARRAY_TASK_MAX`   | the highest index value  |
+| `SLURM_ARRAY_TASK_MIN`   | the lowest index value   |
 
 For example, if you submitted a job array with the command
 
