@@ -22,7 +22,7 @@ $ nvidia-smi dmon
 The columns displayed, format and interval can all be configured. The manpage of
 `nvidia-smi` gives full details (`man nvidia-smi`).
 
-Here is an example which could be incorporated into a SLURM script. This will
+Here is an example which could be incorporated into a Slurm script. This will
 display
 
 - Time and date
@@ -34,7 +34,7 @@ display
 - PCIe throughput input (Rx) and output (Tx) in MB/s
 
 Every 300 seconds this information will be saved to a file named using the
-SLURM array job and task IDs as discussed in [the SLURM
+Slurm array job and task IDs as discussed in [the Slurm
 section](#parametrising-job-arrays)
 
 This job is sent to the background and stopped after the `$command` has run.
@@ -42,7 +42,7 @@ This job is sent to the background and stopped after the `$command` has run.
 ```bash
 ...
 
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}".txt &
 gpu_watch_pid=$!
 
 $command
@@ -93,7 +93,7 @@ Submitted batch job 43
 Or in a batch script
 
 ```bash
-##SLURM --gres=gpu:1
+##Slurm --gres=gpu:1
 ```
 
 ### Benchmarking
@@ -154,11 +154,11 @@ variables
 
 | environment variable     | value                    |
 |--------------------------|--------------------------|
-| `SLURM_ARRAY_JOB_ID`     | job id of the first task |
-| `SLURM_ARRAY_TASK_ID`    | current task index       |
-| `SLURM_ARRAY_TASK_COUNT` | total number of tasks    |
-| `SLURM_ARRAY_TASK_MAX`   | the highest index value  |
-| `SLURM_ARRAY_TASK_MIN`   | the lowest index value   |
+| `Slurm_ARRAY_JOB_ID`     | job id of the first task |
+| `Slurm_ARRAY_TASK_ID`    | current task index       |
+| `Slurm_ARRAY_TASK_COUNT` | total number of tasks    |
+| `Slurm_ARRAY_TASK_MAX`   | the highest index value  |
+| `Slurm_ARRAY_TASK_MIN`   | the lowest index value   |
 
 For example, if you submitted a job array with the command
 
@@ -168,7 +168,7 @@ Submitted batch job 42
 ```
 
 then the job id of the first task is `42` and the four jobs will have
-`SLURM_ARRAY_JOB_ID`, `SLURM_ARRAY_TASK_ID` pairs of
+`Slurm_ARRAY_JOB_ID`, `Slurm_ARRAY_TASK_ID` pairs of
 
 - 42, 0
 - 42, 4
@@ -178,7 +178,7 @@ then the job id of the first task is `42` and the four jobs will have
 The environment variables can be used in your commands. For example
 
 ```bash
-my_program -n $SLURM_ARRAY_TASK_ID -o output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+my_program -n $Slurm_ARRAY_TASK_ID -o output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
 ```
 
 with the same `sbatch` command as before, the following commands would be
@@ -213,7 +213,7 @@ INPUT_DIR=$(basename $INPUT_DATA)
 OUTPUT_DIR=/path/to/output/dir
 
 # Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH= $HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+JOB_SCRATCH_PATH= $HOST_SCRATCH_PATH/${Slurm_JOB_NAME}_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
 mkdir -p $JOB_SCRATCH_PATH
 
 # Copy input data to scratch directory
@@ -226,7 +226,7 @@ mkdir -p $JOB_SCRATCH_PATH/output
 singularity run --bind $JOB_SCRATCH_PATH:/scratch_mount --nv my_container.sif --input /scratch_mount/$INPUT_DIR --output /scratch_mount/output/
 
 # Copy output
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
 
 # Clean up
 rm -rf $JOB_SCRATCH_PATH
