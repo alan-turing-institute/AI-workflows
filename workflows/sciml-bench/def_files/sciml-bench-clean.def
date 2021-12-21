@@ -1,0 +1,195 @@
+Bootstrap: docker
+From: ubuntu:18.04
+#Stage: spython-base
+
+%files
+# -----------------------------------------------------------------------------------
+    requirements.txt /sciml-benchmarks/requirements.txt
+    MANIFEST.in /sciml-benchmarks/MANIFEST.in
+    setup.py /sciml-benchmarks/setup.py
+    doc /sciml-benchmarks/doc
+    sciml_bench /sciml-benchmarks/sciml_bench
+
+
+%environment
+# -----------------------------------------------------------------------------------
+
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    export LC_ALL=C
+    export HOROVOD_GPU_ALLREDUCE=NCCL
+    export HOROVOD_GPU_ALLGATHER=MPI
+    export HOROVOD_GPU_BROADCAST=MPI
+    #export HOROVOD_NCCL_HOME=/usr/local/cuda/nccl
+    #export HOROVOD_NCCL_INCLUDE=/usr/local/cuda/nccl/include
+    #export HOROVOD_NCCL_LIB=/usr/local/cuda/nccl/lib
+    export PYTHON_VERSION=3.8
+    export TENSORFLOW_VERSION=2.3.0
+    export PYTORCH_VERSION=1.10.0+cu113
+
+%post
+# -----------------------------------------------------------------------------------
+
+export SINGULARITY_BINDPATH=$SINGULARITY_BINDPATH,$(echo /usr/bin/ | sed -e 's/ /,/g')
+
+MLNX_ARCH=ubuntu18.04-x86_64
+MLNX_VERSION=5.2-1.0.4.0
+
+# Python 3.7 is supported by Ubuntu Bionic out of the box
+python=3.7
+PYTHON_VERSION=${python}
+
+# Set default shell to /bin/bash
+#SHELL ["/bin/bash", "-cu"]
+
+TZ="Europe/London"
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends \
+build-essential \
+cmake \
+g++-7 \
+git \
+curl \
+vim \
+wget \
+ca-certificates \
+python${PYTHON_VERSION} \
+python${PYTHON_VERSION}-dev \
+python${PYTHON_VERSION}-distutils \
+libpython-stdlib \
+python \
+udev \
+automake \
+gfortran \
+autotools-dev \
+chrpath \
+pkg-config \
+libnl-3-dev \
+tcl \
+pciutils \
+tk \
+libnl-route-3-dev \
+libltdl-dev \
+bison \
+autoconf \
+flex \
+graphviz \
+libssl1.0.0 \
+kmod \
+debhelper \
+libgfortran4 \
+ethtool \
+swig \
+lsof \
+libnl-route-3-200 \
+m4 \
+libnl-3-200 \
+dpatch \
+libnuma-dev \
+iputils-ping \
+iproute2 \
+apt-utils
+
+ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python
+
+curl -O https://bootstrap.pypa.io/get-pip.py && \
+python get-pip.py && \
+rm get-pip.py
+
+wget http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MLNX_VERSION}/MLNX_OFED_LINUX-${MLNX_VERSION}-${MLNX_ARCH}.tgz && \
+tar -xzvf MLNX_OFED_LINUX-${MLNX_VERSION}-${MLNX_ARCH}.tgz --no-same-owner && \
+cd  MLNX_OFED_LINUX-${MLNX_VERSION}-${MLNX_ARCH} && \
+./mlnxofedinstall --user-space-only --without-fw-update --skip-repo --force && \
+cd .. && \
+rm -rf MLNX_OFED-LINUX-${MLNX_VERSION}-${MLNX_ARCH} && \
+rm -rf *.tgz
+
+# Install Open MPI version 4.1
+wget https://www.open-mpi.org/software/ompi/v4.1/downloads/openmpi-4.1.0.tar.gz && \
+tar zxf openmpi-4.1.0.tar.gz && \
+cd openmpi-4.1.0 && \
+./configure --enable-mpirun-prefix-by-default \
+            --enable-shared \
+            --without-verbs && \
+make -j $(nproc) all && \
+make install && \
+ldconfig && \
+rm -rf /tmp/openmpi
+
+cd /
+pip --no-cache-dir --disable-pip-version-check install mpi4py
+
+LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/openmpi:$LD_LIBRARY_PATH
+
+# --------------------------------------------------------------------------
+
+# this will install all necessary packages and prepare the container
+
+# TensorFlow version is tightly coupled to CUDA and cuDNN so it should be selected carefully
+# Python 2.7 or 3.5 is supported by Ubuntu Xenial out of the box
+
+    export PYTHON_VERSION=3.8
+    export TENSORFLOW_VERSION=2.3.0
+    export PYTORCH_VERSION=1.10.0+cu113
+
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
+    mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    apt-get update && apt-get install -y gnupg
+    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+    apt-get install -y software-properties-common
+    apt-get update
+    add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
+    apt-get update
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y install cuda
+
+    apt-get update && apt-get install -y libcudnn8 libcudnn8-dev
+    apt install libnccl2 libnccl-dev
+
+    
+    apt-get -y update && apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends \
+        build-essential \
+        cmake \
+        git \
+        curl \
+        vim \
+        wget \
+        ca-certificates \
+        libjpeg-dev \
+        libpng-dev \
+        python${PYTHON_VERSION} \
+        python${PYTHON_VERSION}-dev
+
+    ln -sf /usr/bin/python${PYTHON_VERSION} /usr/bin/python
+
+    curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
+
+# Install TensorFlow, Keras and PyTorch
+    pip install torch==${PYTORCH_VERSION} torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+    pip install mxnet-cu112 tensorflow-gpu==${TENSORFLOW_VERSION} keras h5py filelock matplotlib scikit-learn
+    
+    export PATH="/usr/local/cuda-11.5/bin:$PATH"
+
+# Install Horovod, temporarily using CUDA stubs
+    ldconfig /usr/local/cuda-11.5/targets/x86_64-linux/lib/stubs && \
+    HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_MXNET=1 HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_PYTORCH=1 pip install --no-cache-dir horovod && \
+    ldconfig
+
+# Set default NCCL parameters
+    echo NCCL_DEBUG=INFO >> /etc/nccl.conf && \
+    echo NCCL_SOCKET_IFNAME=^docker0 >> /etc/nccl.conf
+
+# Clean up cuda
+    ls /usr/local/
+    sudo apt-get --purge -y remove "cuda*"
+    sudo apt-get --purge -y remove "nvidia*"
+
+# Install sciml-bench
+    cd /sciml-benchmarks && pip install .
+
+%environment
+
+%runscript
+    sciml-bench $@
