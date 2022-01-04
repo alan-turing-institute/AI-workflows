@@ -3,11 +3,11 @@ From: ompi4-cu11-mlnx.sif
 
 %files
 # -----------------------------------------------------------------------------------
-    requirements.txt /sciml-benchmarks/requirements.txt
-    MANIFEST.in /sciml-benchmarks/MANIFEST.in
-    setup.py /sciml-benchmarks/setup.py
-    doc /sciml-benchmarks/doc
-    sciml_bench /sciml-benchmarks/sciml_bench
+    sciml-bench/requirements.txt /sciml-benchmarks/requirements.txt
+    sciml-bench/MANIFEST.in /sciml-benchmarks/MANIFEST.in
+    sciml-bench/setup.py /sciml-benchmarks/setup.py
+    sciml-bench/doc /sciml-benchmarks/doc
+    sciml-bench/sciml_bench /sciml-benchmarks/sciml_bench
 
 
 %environment
