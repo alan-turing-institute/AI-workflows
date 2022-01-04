@@ -3,4 +3,4 @@
 	url = https://github.com/facebookresearch/pytorch_GAN_zoo.git
 [submodule "workflows/sciml-bench/sciml-bench"]
 	path = workflows/sciml-bench/sciml-bench
-	url = git@github.com:stfc-sciml/sciml-bench.git
+	url = https://github.com/stfc-sciml/sciml-bench.git
