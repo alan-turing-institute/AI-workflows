@@ -22,7 +22,7 @@ From: ompi4-cu11.sif
     #export HOROVOD_NCCL_INCLUDE=/usr/local/cuda/nccl/include
     #export HOROVOD_NCCL_LIB=/usr/local/cuda/nccl/lib 
     export PYTHON_VERSION=3.8
-    export TENSORFLOW_VERSION=2.3.0
+    export TENSORFLOW_VERSION=2.7.0
     export PYTORCH_VERSION=1.10.0+cu113
 
 %post
@@ -33,7 +33,7 @@ From: ompi4-cu11.sif
 # Python 2.7 or 3.5 is supported by Ubuntu Xenial out of the box
 
     export PYTHON_VERSION=3.8
-    export TENSORFLOW_VERSION=2.3.0
+    export TENSORFLOW_VERSION=2.7.0
     export PYTORCH_VERSION=1.10.0+cu113
 
     echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
