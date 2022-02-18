@@ -1,3 +1,6 @@
 [submodule "pytorch_GAN_zoo"]
 	path = workflows/pytorch_GAN_zoo/pytorch_GAN_zoo
 	url = https://github.com/facebookresearch/pytorch_GAN_zoo.git
+[submodule "workflows/time_domain_music_source_separation/asteroid"]
+	path = workflows/time_domain_music_source_separation/asteroid
+	url = https://github.com/saurjya/asteroid.git
