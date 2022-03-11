@@ -1,7 +1,7 @@
 ---
 name: Build
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -13,10 +13,18 @@ jobs:
         with:
           submodules: true
 
-      - name: Install singularity
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.7'
+
+      - name: Install Apptainer dependencies
         run: |
+          # Apptainer installation instructions
+          # https://github.com/apptainer/apptainer/blob/main/INSTALL.md
+          #
+          # Install Apptainer dependencies
           sudo apt-get update
-          # Install singularity dependencies
           sudo apt-get install -y \
           build-essential \
           libssl-dev \
@@ -26,18 +34,24 @@ jobs:
           libseccomp-dev \
           wget \
           pkg-config \
-          git \
-          cryptsetup \
-          golang
-          # Get singularity release
-          export VERSION=3.8.0
-          wget https://github.com/hpcng/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
-          tar -xzf singularity-${VERSION}.tar.gz
-          # Build/install singularity
-          cd singularity-${VERSION}
+          cryptsetup
+          sudo apt-get clean
+
+      - name: Install Apptainer
+        run: |
+          #
+          # Get Apptainer release
+          export VERSION=1.0.0
+          wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer-${VERSION}.tar.gz
+          tar -xzf apptainer-${VERSION}.tar.gz
+          #
+          # Build/install Apptainer
+          cd apptainer-${VERSION}
           ./mconfig
           make -C builddir
           sudo make -C builddir install
+          cd ../
+          rm -r apptainer-${VERSION} apptainer-${VERSION}.tar.gz
 
       - name: Build pytorch GAN zoo
         working-directory: workflows/pytorch_GAN_zoo/
