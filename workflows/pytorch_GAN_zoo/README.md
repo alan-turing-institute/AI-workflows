@@ -38,10 +38,21 @@ Any flags or command line arguments can be declared after the script name.
 When training, you will need to supply the `--nv` flag to singularity so that
 the host GPU may be used.
 
+### Multiple GPUs
+
+PyTorch GAN zoo natively supports [parallelisation across multiple
+GPUs](https://github.com/facebookresearch/pytorch_GAN_zoo/issues/57). The
+devices to use can be selected using the `CUDA_VISIBLE_DEVICES` environment
+variable. CUDA compatible GPUs are numbered from zero. For example, to use the
+first and third CUDA accelerators you would set `CUDA_VISIBLE_DEVICES=0,2`
+
+To pass this environment variable to singularity the `--env-file` flag must be
+used as [passing environment variables with commas is not supported by the
+`--env` flag](https://github.com/apptainer/singularity/issues/6088).
 
 ```bash
-singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py dtd <path to dtd dataset>/images/
-singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+echo 'CUDA_VISIBLE_DEVICES=0,1' > env.txt
+singularity exec --env-file env.txt pytorch_GAN_zoo.sif ...
 ```
 
 ### Models
