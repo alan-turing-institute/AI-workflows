@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/ubuntu2004"
 
-  config.vm.hostname = "singularity"
+  config.vm.hostname = "apptainer"
 
   config.vm.synced_folder "./", "/vagrant"
 
@@ -15,7 +15,10 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-    # Install singularity dependencies
+    # Apptainer installation instructions
+    # https://github.com/apptainer/apptainer/blob/main/INSTALL.md
+    #
+    # Install Apptainer dependencies
     apt-get update
     apt-get install -y \
     build-essential \
@@ -26,20 +29,27 @@ Vagrant.configure("2") do |config|
     libseccomp-dev \
     wget \
     pkg-config \
-    git \
-    cryptsetup \
-    golang
+    cryptsetup
     apt-get clean
-    # Get singularity release
-    export VERSION=3.8.0
-    wget https://github.com/hpcng/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
-    tar -xzf singularity-${VERSION}.tar.gz
-    # Build/install singularity
-    cd singularity-${VERSION}
+    #
+    # Install GO
+    export GOVERSION=1.17.7 OS=linux ARCH=amd64
+    wget -O go${GOVERSION}.${OS}-${ARCH}.tar.gz https://dl.google.com/go/go${GOVERSION}.${OS}-${ARCH}.tar.gz
+    tar -C /opt -xzf go${GOVERSION}.${OS}-${ARCH}.tar.gz
+    rm go${GOVERSION}.${OS}-${ARCH}.tar.gz
+    export PATH=$PATH:/opt/go/bin
+    #
+    # Get Apptainer release
+    export VERSION=1.0.0
+    wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer-${VERSION}.tar.gz
+    tar -xzf apptainer-${VERSION}.tar.gz
+    #
+    # Build/install Apptainer
+    cd apptainer-${VERSION}
     ./mconfig
     make -C builddir
     make -C builddir install
     cd ../
-    rm -r singularity-${VERSION} singularity-${VERSION}.tar.gz
+    rm -r apptainer-${VERSION} apptainer-${VERSION}.tar.gz
   SHELL
 end
