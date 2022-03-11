@@ -4,8 +4,8 @@ This example builds a singularity container for [Facebook Research's PyTorch GAN
 Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo).
 
 The singularity container will allow you to call all the scripts from the
-project and includes are requirements. The container supports CUDA versions
-10.1, 10.2 and 11.1 on the host.
+project and includes are requirements. The container supports CUDA version 11.1
+on the host.
 
 ## Building
 
@@ -36,12 +36,8 @@ singularity exec pytorch_GAN_zoo.sif eval.py
 Any flags or command line arguments can be declared after the script name.
 
 When training, you will need to supply the `--nv` flag to singularity so that
-the host GPU may be used. You will also need to select a singularity app, using
-the `--app` flag to select the appropriate CUDA version. The available apps are
-`cu101`, `cu102`, and `cu111` for CUDA 10.1, 10.2 and 11.1 respectively.
+the host GPU may be used.
 
-For example, to pre-process the dtd dataset and train a PGAN model on a host
-with CUDA 10.2 you could run the following commands.
 
 ```bash
 singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py dtd <path to dtd dataset>/images/
@@ -60,16 +56,14 @@ In each example the `--restart` flag is used so that checkpoints are
 periodically written during the training. The `--no_vis` flag is used to disable
 visdom visualisations.
 
-As above, these examples assume the host has CUDA 10.2 installed.
-
 #### DTD
 
 The DTD dataset requires no preprocessing, so the datasets script simply creates
 a configuration file.
 
 ```bash
-singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
-singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+singularity exec pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
+singularity exec pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
 ```
 
 Where `<path to dtd>` is the path of the directory extracted from the dtd
@@ -82,8 +76,8 @@ A processed dataset will be written to a directory delcared using the `-o` flag,
 `cifar-10` n this example.
 
 ```bash
-singularity exec --app cu102 pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
-singularity exec --nv --app cu102 pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
+singularity exec pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
+singularity exec pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
 ```
 
 Where `<path to cifar-10>` is the path of the directory containing the pickle
