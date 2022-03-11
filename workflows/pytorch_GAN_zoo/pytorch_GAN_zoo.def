@@ -1,5 +1,5 @@
-BootStrap: library
-From: ubuntu:20.04
+BootStrap: localimage
+From: ../../base_containers/pytorch/pytorch_cu_11.1.sif
 
 # Global settings
 %files
@@ -29,47 +29,3 @@ From: ubuntu:20.04
     # Install python dependencies
     pip3 install --no-cache-dir -r requirements.txt
     pip3 install --no-cache-dir imageio  # For image processing
-
-
-# CUDA 11.1 app
-%apphelp cu111
-    Cuda 11.1 support, torch 1.9.0, torchvision 0.10.0, torchaudio 0.9.0
-
-%appinstall cu111
-    python3 -m venv --system-site-packages ./venv_cu111
-    . ./venv_cu111/bin/activate
-    pip3 install --no-cache-dir torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
-    deactivate
-
-%appenv cu111
-    PATH="/scif/apps/cu111/venv_cu111/bin:$PATH"
-    export PATH
-
-# CUDA 10.2 app
-%apphelp cu102
-    Cuda 10.2 support, torch 1.9.0, torchvision 0.10.0, torchaudio 0.9.0
-
-%appinstall cu102
-    python3 -m venv --system-site-packages ./venv_cu102
-    . ./venv_cu102/bin/activate
-    pip3 install --no-cache-dir torch torchvision torchaudio
-    deactivate
-
-%appenv cu102
-    PATH="/scif/apps/cu102/venv_cu102/bin:$PATH"
-    export PATH
-
-
-# CUDA 10.1 app
-%apphelp cu101
-    Cuda 10.1 support, torch 1.7.1, torchvision 0.8.2, torchaudio 0.7.2
-
-%appinstall cu101
-    python3 -m venv --system-site-packages ./venv_cu101
-    . ./venv_cu101/bin/activate
-    pip3 install --no-cache-dir torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
-    deactivate
-
-%appenv cu101
-    PATH="/scif/apps/cu101/venv_cu101/bin:$PATH"
-    export PATH
