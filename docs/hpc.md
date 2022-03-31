@@ -40,7 +40,7 @@ section](#parametrising-job-arrays)
 This job is sent to the background and stopped after the `$COMMAND` has run.
 
 ```bash
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
 GPU_WATCH_PID=$!
 
 $COMMAND
@@ -89,7 +89,7 @@ Submitted batch job 43
 Or in a batch script
 
 ```bash
-##Slurm --gres=gpu:1
+##SBATCH --gres=gpu:1
 ```
 
 ### Benchmarking
@@ -150,21 +150,21 @@ variables
 
 | environment variable     | value                    |
 |--------------------------|--------------------------|
-| `Slurm_ARRAY_JOB_ID`     | job id of the first task |
-| `Slurm_ARRAY_TASK_ID`    | current task index       |
-| `Slurm_ARRAY_TASK_COUNT` | total number of tasks    |
-| `Slurm_ARRAY_TASK_MAX`   | the highest index value  |
-| `Slurm_ARRAY_TASK_MIN`   | the lowest index value   |
+| `SLURM_ARRAY_JOB_ID`     | job id of the first task |
+| `SLURM_ARRAY_TASK_ID`    | current task index       |
+| `SLURM_ARRAY_TASK_COUNT` | total number of tasks    |
+| `SLURM_ARRAY_TASK_MAX`   | the highest index value  |
+| `SLURM_ARRAY_TASK_MIN`   | the lowest index value   |
 
 For example, if you submitted a job array with the command
 
 ```bash
-$ sbatch --array=0-12:4 script.sh
+$ sbatch --array=0-12%4 script.sh
 Submitted batch job 42
 ```
 
 then the job id of the first task is `42` and the four jobs will have
-`Slurm_ARRAY_JOB_ID`, `Slurm_ARRAY_TASK_ID` pairs of
+`SLURM_ARRAY_JOB_ID`, `SLURM_ARRAY_TASK_ID` pairs of
 
 - 42, 0
 - 42, 4
@@ -174,7 +174,7 @@ then the job id of the first task is `42` and the four jobs will have
 The environment variables can be used in your commands. For example
 
 ```bash
-my_program -n $Slurm_ARRAY_TASK_ID -o output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+my_program -n $SLURM_ARRAY_TASK_ID -o output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 ```
 
 with the same `sbatch` command as before, the following commands would be
@@ -209,7 +209,7 @@ INPUT_DIR=$(basename $INPUT_DATA)
 OUTPUT_DIR=/path/to/output/dir
 
 # Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${Slurm_JOB_NAME}_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 mkdir -p $JOB_SCRATCH_PATH
 
 # Copy input data to scratch directory
@@ -222,7 +222,7 @@ mkdir -p $JOB_SCRATCH_PATH/output
 singularity run --bind $JOB_SCRATCH_PATH:/scratch_mount --nv my_container.sif --input /scratch_mount/$INPUT_DIR --output /scratch_mount/output/
 
 # Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 
 # Clean up
 rm -rf $JOB_SCRATCH_PATH
@@ -282,7 +282,7 @@ COMMAND=singularity exec --nv --bind $JOB_SCRATCH_PATH:/scratch_mount ...
 ##########
 
 # Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${Slurm_JOB_NAME}_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 mkdir -p $JOB_SCRATCH_PATH
 
 # Copy input data to scratch directory
@@ -300,13 +300,13 @@ module purge
 module load singularity
 
 # Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
 GPU_WATCH_PID=$!
 
 # Run command
-date --iso-8601=seconds --utc
+START_TIME=$(date --iso-8601=seconds --utc)
 $COMMAND
-date --iso-8601=seconds --utc
+END_TIME=$(date --iso-8601=seconds --utc)
 
 ##########
 # Post job clean up
@@ -316,8 +316,12 @@ date --iso-8601=seconds --utc
 kill $GPU_WATCH_PID
 
 # Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 
 # Clean up
 rm -rf $JOB_SCRATCH_PATH
+
+echo "executed: $COMMAND"
+echo "started: $START_TIME"
+echo "finished: $END_TIME"
 ```
