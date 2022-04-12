@@ -13,6 +13,11 @@ import sys
 # For each version of torch the corresponding CUDA versions, torchvision
 # version and torchaudio version is declared
 torch_spec = {
+    '1.11.0': {
+        'cuda': ['11.5', '11.3', '10.2'],
+        'vision': '0.12.0',
+        'audio': '0.11.0'
+    },
     '1.10.2': {
         'cuda': ['11.3', '11.1', '10.2'],
         'vision': '0.11.3',
