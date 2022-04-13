@@ -54,11 +54,14 @@ def torch_parameters(torch_version: str, cuda_version: str) -> dict[str, str]:
     # Create CUDA version string. e.g. CUDA 11.3 -> +cu113
     cuda_string = '+cu' + cuda_version.replace('.', '')
 
+    spec = torch_spec[torch_version]
+
     parameters = {
-        'torch_version': torch_version + cuda_string,
-        'torchvision_version': (torch_spec[torch_version]['vision'] +
-                                cuda_string),
-        'torchaudio_version': torch_spec[torch_version]['audio'],
+        'torch_version': torch_version,
+        'cuda_version': cuda_version,
+        'torch_package_version': torch_version + cuda_string,
+        'torchvision_package_version': spec['vision'] + cuda_string,
+        'torchaudio_package_version': spec['audio'],
         'find_links': find_links
     }
 
