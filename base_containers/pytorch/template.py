@@ -3,6 +3,14 @@
 import argparse
 from string import Template
 import sys
+from typing import NamedTuple
+
+
+class Spec(NamedTuple):
+    cuda: list[str]
+    vision: str
+    audio: str
+
 
 # See https://pytorch.org/get-started/previous-versions/
 # https://download.pytorch.org/whl/torch_stable.html
@@ -13,36 +21,36 @@ import sys
 # For each version of torch the corresponding CUDA versions, torchvision
 # version and torchaudio version is declared
 torch_spec = {
-    '1.11.0': {
-        'cuda': ['11.5', '11.3', '10.2'],
-        'vision': '0.12.0',
-        'audio': '0.11.0'
-    },
-    '1.10.2': {
-        'cuda': ['11.3', '11.1', '10.2'],
-        'vision': '0.11.3',
-        'audio': '0.10.2'
-    },
-    '1.10.1': {
-        'cuda': ['11.3', '11.1', '10.2'],
-        'vision': '0.11.2',
-        'audio': '0.10.1'
-    },
-    '1.10.0': {
-        'cuda': ['11.3', '11.1', '10.2'],
-        'vision': '0.11.0',
-        'audio': '0.10.0'
-    },
-    '1.9.1': {
-        'cuda': ['11.1', '10.2'],
-        'vision': '0.10.1',
-        'audio': '0.9.1'
-    },
-    '1.9.0': {
-        'cuda': ['11.1', '10.2'],
-        'vision': '0.10.0',
-        'audio': '0.9.0'
-    },
+    '1.11.0': Spec(
+        cuda=['11.5', '11.3', '10.2'],
+        vision='0.12.0',
+        audio='0.11.0'
+    ),
+    '1.10.2': Spec(
+        cuda=['11.3', '11.1', '10.2'],
+        vision='0.11.3',
+        audio='0.10.2'
+    ),
+    '1.10.1': Spec(
+        cuda=['11.3', '11.1', '10.2'],
+        vision='0.11.2',
+        audio='0.10.1'
+    ),
+    '1.10.0': Spec(
+        cuda=['11.3', '11.1', '10.2'],
+        vision='0.11.0',
+        audio='0.10.0'
+    ),
+    '1.9.1': Spec(
+        cuda=['11.1', '10.2'],
+        vision='0.10.1',
+        audio='0.9.1'
+    ),
+    '1.9.0': Spec(
+        cuda=['11.1', '10.2'],
+        vision='0.10.0',
+        audio='0.9.0'
+    ),
 }
 
 find_links = 'https://download.pytorch.org/whl/torch_stable.html'
@@ -60,8 +68,8 @@ def torch_parameters(torch_version: str, cuda_version: str) -> dict[str, str]:
         'torch_version': torch_version,
         'cuda_version': cuda_version,
         'torch_package_version': torch_version + cuda_string,
-        'torchvision_package_version': spec['vision'] + cuda_string,
-        'torchaudio_package_version': spec['audio'],
+        'torchvision_package_version': spec.vision + cuda_string,
+        'torchaudio_package_version': spec.audio,
         'find_links': find_links
     }
 
@@ -114,7 +122,7 @@ def main() -> None:
         # Build all def files
         case('all', 'all'):
             for torch_version, spec in torch_spec.items():
-                for cuda_version in spec['cuda']:
+                for cuda_version in spec.cuda:
                     write_def(torch_version, cuda_version)
 
         # Building all def files for a particular CUDA version is unsupported
@@ -126,13 +134,13 @@ def main() -> None:
         # Build all def files for a particular Torch version
         case(_, 'all'):
             spec = torch_spec[args.torch]
-            for cuda_version in spec['cuda']:
+            for cuda_version in spec.cuda:
                 write_def(args.torch, cuda_version)
 
         # Build a single def file for a single Torch & CUDA combination
         case(_, _):
-            if args.cuda not in (supported_versions :=
-                                 torch_spec[args.torch]['cuda']):
+            spec = torch_spec[args.torch]
+            if args.cuda not in (supported_versions := spec.cuda):
                 print(f'Torch {args.torch} does not support CUDA {args.cuda}')
                 print(
                     'Supported CUDA versions: ' + ' '.join(supported_versions)
