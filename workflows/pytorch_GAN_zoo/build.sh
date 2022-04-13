@@ -1,16 +1,20 @@
 #!/bin/bash
 
 _UID=$(id -u)
-DEF_FILE="pytorch_GAN_zoo.def"
-SIF_FILE="pytorch_GAN_zoo.sif"
+NAME="pytorch_GAN_zoo"
+DEF_FILE="$NAME.def"
+SIF_FILE="$NAME.sif"
 
-TORCH_DEF_FILE="pytorch_cu_11.1.def"
-TORCH_SIF_FILE="pytorch_cu_11.1.sif"
+TORCH_VERSION="1.9.1"
+CUDA_VERSION="11.1"
+TORCH_NAME="pytorch_${TORCH_VERSION}_cu_$CUDA_VERSION"
+TORCH_DEF_FILE="$TORCH_NAME.def"
+TORCH_SIF_FILE="$TORCH_NAME.sif"
 
 pushd ../../base_containers/pytorch/ || exit
 if ! [ -f $TORCH_SIF_FILE ]; then
     if ! [ -f $TORCH_DEF_FILE ]; then
-        ./template.py 11.1
+        ./template.py $TORCH_VERSION $CUDA_VERSION
     fi
 
     if [ "$_UID" = 0 ]; then
