@@ -1,5 +1,5 @@
 BootStrap: localimage
-From: ../../base_containers/pytorch/pytorch_cu_11.1.sif
+From: ../../base_containers/pytorch/pytorch_1.9.1_cu_11.1.sif
 
 # Global settings
 %files

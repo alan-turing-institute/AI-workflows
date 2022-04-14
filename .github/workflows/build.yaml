@@ -18,6 +18,11 @@ jobs:
         with:
           go-version: '^1.17.7'
 
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+
       - name: Install Apptainer dependencies
         run: |
           # Apptainer installation instructions
@@ -56,5 +61,5 @@ jobs:
       - name: Build pytorch GAN zoo
         working-directory: workflows/pytorch_GAN_zoo/
         run: |
-          id
-          sudo ./build.sh
+          sudo env "PATH=$PATH" python3 --version
+          sudo env "PATH=$PATH"  ./build.sh

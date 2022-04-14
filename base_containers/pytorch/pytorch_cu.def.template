@@ -14,4 +14,16 @@ From: ubuntu:20.04
     apt-get clean
 
     # Install python dependencies
-    pip3 install --no-cache-dir torch==$torch_version torchvision==$torchvision_version torchaudio==$torchaudio_version -f $find_links
+    pip3 install --no-cache-dir torch==$torch_package_version torchvision==$torchvision_package_version torchaudio==$torchaudio_package_version -f $find_links
+
+%help
+    This container provides PyTorch $torch_version built with support for CUDA $cuda_version.
+
+    This containers entry point is Python.
+
+    To Run a PyTorch script pass the scripts path as the argument:
+
+    apptainer run --nv container.sif my_script.py
+
+%runscript
+    /usr/bin/python3 $$@
