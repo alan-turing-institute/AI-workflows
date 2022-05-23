@@ -9,9 +9,10 @@ Vagrant.configure("2") do |config|
     vb.memory = 8192
     vb.cpus = 4
   end
-  config.vm.provider :libvirt do |libvirt|
+  config.vm.provider "libvirt" do |libvirt, override|
     libvirt.cpus = 4
     libvirt.memory = 8192
+    override.vm.synced_folder "./", "/vagrant", type: "nfs", nfs_udp: false
   end
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -33,14 +34,14 @@ Vagrant.configure("2") do |config|
     apt-get clean
     #
     # Install GO
-    export GOVERSION=1.17.7 OS=linux ARCH=amd64
+    export GOVERSION=1.18.2 OS=linux ARCH=amd64
     wget -O go${GOVERSION}.${OS}-${ARCH}.tar.gz https://dl.google.com/go/go${GOVERSION}.${OS}-${ARCH}.tar.gz
     tar -C /opt -xzf go${GOVERSION}.${OS}-${ARCH}.tar.gz
     rm go${GOVERSION}.${OS}-${ARCH}.tar.gz
     export PATH=$PATH:/opt/go/bin
     #
     # Get Apptainer release
-    export VERSION=1.0.0
+    export VERSION=1.0.2
     wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer-${VERSION}.tar.gz
     tar -xzf apptainer-${VERSION}.tar.gz
     #
