@@ -1,2 +1,0 @@
-Bootstrap: docker
-From: ${CUDA_BASE_IMAGE}

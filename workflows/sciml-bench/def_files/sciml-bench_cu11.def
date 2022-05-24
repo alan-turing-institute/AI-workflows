@@ -1,13 +1,13 @@
 Bootstrap: localimage
-From: ompi4-cu11.sif
+From: ompi4_cu11.sif
 
 %files
 # -----------------------------------------------------------------------------------
-    sciml-bench/requirements.txt /sciml-benchmarks/requirements.txt
-    sciml-bench/MANIFEST.in /sciml-benchmarks/MANIFEST.in
-    sciml-bench/setup.py /sciml-benchmarks/setup.py
-    sciml-bench/doc /sciml-benchmarks/doc
-    sciml-bench/sciml_bench /sciml-benchmarks/sciml_bench
+    requirements.txt /sciml-benchmarks/requirements.txt
+    MANIFEST.in /sciml-benchmarks/MANIFEST.in
+    setup.py /sciml-benchmarks/setup.py
+    doc /sciml-benchmarks/doc
+    sciml_bench /sciml-benchmarks/sciml_bench
 
 
 %environment
@@ -18,9 +18,6 @@ From: ompi4-cu11.sif
     export HOROVOD_GPU_ALLREDUCE=NCCL
     export HOROVOD_GPU_ALLGATHER=MPI
     export HOROVOD_GPU_BROADCAST=MPI
-    #export HOROVOD_NCCL_HOME=/usr/local/cuda/nccl
-    #export HOROVOD_NCCL_INCLUDE=/usr/local/cuda/nccl/include
-    #export HOROVOD_NCCL_LIB=/usr/local/cuda/nccl/lib 
     export PYTHON_VERSION=3.8
     export TENSORFLOW_VERSION=2.7.0
     export PYTORCH_VERSION=1.10.0+cu113
