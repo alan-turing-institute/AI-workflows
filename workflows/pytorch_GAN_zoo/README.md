@@ -62,7 +62,7 @@ singularity exec pytorch_GAN_zoo.sif train.py
 
 Any flags or command line arguments can be declared after the script name.
 
-When training, you will need to supply the `--nv` flag to singularity so that
+For many scripts, you will need to supply the `--nv` flag to singularity so that
 the host GPU may be used.
 
 ## Multiple GPUs
