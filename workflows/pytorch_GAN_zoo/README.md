@@ -21,7 +21,34 @@ non-root user. If this is not supported on your system you can run the script as
 root.
 
 When the script is finished you will find the container (`pytorch_GAN_zoo.sif`)
-in you current working directory.
+in your current working directory.
+
+## Datasets
+
+The container includes a convenience script for fetching datasets.
+
+Each dataset can be fetched using,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data <dataset>
+```
+
+| `<dataset>` | description                                                                           |
+|-------------|---------------------------------------------------------------------------------------|
+| `dtd`       | [5,640 texture images in 47 categories](https://www.robots.ox.ac.uk/~vgg/data/dtd/)   |
+| `cifar10`   | [60,000 images of objects in 10 classes](https://www.cs.toronto.edu/~kriz/cifar.html) |
+
+Both datasets can be fetch with the following commands,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data dtd
+singularity exec pytorch_GAN_zoo.sif get_data cifar10
+```
+
+[CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) is a dataset of more
+than 200,000 images of celebrities.  Downloading this dataset is more difficult
+to automate. The dataset can be downloaded using a browser
+[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ)
 
 ## Usage
 
