@@ -122,6 +122,9 @@ In each example the `--restart` flag is used so that checkpoints are
 periodically written during the training. The `--no_vis` flag is used to disable
 visdom visualisations.
 
+Note that training these models takes approximately six days on a single Nvidia
+V100.
+
 ### CelebA
 
 The [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) data set can be
