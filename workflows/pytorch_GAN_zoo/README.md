@@ -116,7 +116,29 @@ singularity exec pytorch_GAN_zoo.sif datasets.py celeba_cropped <path_to_celeba>
 This command will save the modified dataset in a directory called
 `celeba_cropped` and create a training configuration file `config_celeba_cropped.json`.
 
+### DTD
+
+The DTD dataset requires no preprocessing, so the datasets script simply creates
+a configuration file, `config_dtd.json`,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif datasets.py dtd dtd/images
+```
+
+### CIFAR-10
+
+When training a model with the CIFAR-10 dataset some preprocessing is required.
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif datasets.py cifar10 cifar-10-batches-py -o cifar10
+```
+A processed dataset will be written to a directory called `cifar-10` and a
+configuration file named `config_cifar10.json` will be written.
+
 ## Training
+
+Here are examples of training PGAN models using the three datasets as processed
+and configured above.
 
 In each example the `--restart` flag is used so that checkpoints are
 periodically written during the training. The `--no_vis` flag is used to disable
@@ -125,48 +147,25 @@ visdom visualisations.
 Note that training these models takes approximately six days on a single Nvidia
 V100.
 
+Each of these examples will write checkpoint and final weights to
+`output_networks/<model_name>` where `<model_name>` is the name you declare
+using the `-n` flag.
+
 ### CelebA
 
-The [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) data set can be
-[downloaded from a public Google Drive repository](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?usp=sharing&resourcekey=0-dYn9z10tMJOBAkviAcfdyQ)
-
-Extract the dataset,
-
 ```bash
-unzip img_align_celeba.zip
-```
-
-The CelebA dataset requires some preprocessing to crop and orientate the
-images.
-
-```bash
-singularity exec --nv pytorch_GAN_zoo.sif datasets.py celeba_cropped <path_to_celeba>/img_align_celeba/ -o celeba_cropped
 singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped
 ```
 
 ### DTD
 
-The DTD dataset requires no preprocessing, so the datasets script simply creates
-a configuration file.
-
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
 singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
 ```
 
-Where `<path to dtd>` is the path of the directory extracted from the dtd
-archive. This directory contains the subdirectories iamges, imdb and labels.
-
 ### CIFAR-10
 
-When training a model with the CIFAR-10 dataset some preprocessing is required.
-A processed dataset will be written to a directory delcared using the `-o` flag,
-`cifar-10` n this example.
-
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
 singularity exec --nv pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
 ```
 
-Where `<path to cifar-10>` is the path of the directory containing the pickle
-files named `data_batch_{1..5}`.
