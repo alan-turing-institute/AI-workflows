@@ -23,33 +23,6 @@ root.
 When the script is finished you will find the container (`pytorch_GAN_zoo.sif`)
 in your current working directory.
 
-## Datasets
-
-The container includes a convenience script for fetching datasets.
-
-Each dataset can be fetched using,
-
-```bash
-singularity exec pytorch_GAN_zoo.sif get_data <dataset>
-```
-
-| `<dataset>` | description                                                                           |
-|-------------|---------------------------------------------------------------------------------------|
-| `dtd`       | [5,640 texture images in 47 categories](https://www.robots.ox.ac.uk/~vgg/data/dtd/)   |
-| `cifar10`   | [60,000 images of objects in 10 classes](https://www.cs.toronto.edu/~kriz/cifar.html) |
-
-Both datasets can be fetch with the following commands,
-
-```bash
-singularity exec pytorch_GAN_zoo.sif get_data dtd
-singularity exec pytorch_GAN_zoo.sif get_data cifar10
-```
-
-[CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) is a dataset of more
-than 200,000 images of celebrities.  Downloading this dataset is more difficult
-to automate. The dataset can be downloaded using a browser
-[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ)
-
 ## Usage
 
 The scripts from [PyTorch GAN
@@ -82,10 +55,68 @@ echo 'CUDA_VISIBLE_DEVICES=0,1' > env.txt
 singularity exec --env-file env.txt pytorch_GAN_zoo.sif ...
 ```
 
-## Training
+## Fetching Datasets
 
-Here are examples showing how to use this container to train a PGAN model using
-the CelebA, DTD and CIFAR-10 datasets.
+The container includes a convenience script for fetching datasets.
+
+Each dataset can be fetched using,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data <dataset>
+```
+
+| `<dataset>` | description                                                                           |
+|-------------|---------------------------------------------------------------------------------------|
+| `dtd`       | [5,640 texture images in 47 categories](https://www.robots.ox.ac.uk/~vgg/data/dtd/)   |
+| `cifar10`   | [60,000 images of objects in 10 classes](https://www.cs.toronto.edu/~kriz/cifar.html) |
+
+Both datasets can be fetch with the following commands,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data dtd
+singularity exec pytorch_GAN_zoo.sif get_data cifar10
+```
+
+[CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) is a dataset of more
+than 200,000 images of celebrities.  Downloading this dataset is more difficult
+to automate. The dataset can be downloaded using a browser
+[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ)
+
+## Story
+
+Here are examples showing how to use this container to train a
+[PGAN](https://arxiv.org/pdf/1710.10196.pdf) model using the CelebA, DTD and
+CIFAR-10 datasets and visualise the results.
+
+You can also use the [DCGAN](https://arxiv.org/pdf/1511.06434.pdf) model by
+passing `-m DCGAN` to `datasets.py`, `train.py` and `eval.py`. If you do not
+specify the model with `-m` PGAN will be used.
+
+## Preprocessing
+
+Some of the datasets require preprocessing before they can be used for training.
+
+### CelebA
+
+The CelebA dataset requires some preprocessing to crop and orientate the
+images.
+
+Extract the dataset,
+
+```bash
+unzip img_align_celeba.zip
+```
+
+Use the `datasets.py` script to preprocess the images,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif datasets.py celeba_cropped <path_to_celeba>/img_align_celeba/ -o celeba_cropped
+```
+
+This command will save the modified dataset in a directory called
+`celeba_cropped` and create a training configuration file `config_celeba_cropped.json`.
+
+## Training
 
 In each example the `--restart` flag is used so that checkpoints are
 periodically written during the training. The `--no_vis` flag is used to disable
