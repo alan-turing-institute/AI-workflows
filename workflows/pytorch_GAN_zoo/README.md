@@ -21,7 +21,7 @@ non-root user. If this is not supported on your system you can run the script as
 root.
 
 When the script is finished you will find the container (`pytorch_GAN_zoo.sif`)
-in you current working directory.
+in your current working directory.
 
 ## Usage
 
@@ -30,15 +30,15 @@ Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo) can be called with
 `singularity exec pytorch_GAN_zoo.sif <script name>`, for example
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif eval.py
+singularity exec pytorch_GAN_zoo.sif train.py
 ```
 
 Any flags or command line arguments can be declared after the script name.
 
-When training, you will need to supply the `--nv` flag to singularity so that
+For many scripts, you will need to supply the `--nv` flag to singularity so that
 the host GPU may be used.
 
-### Multiple GPUs
+## Multiple GPUs
 
 PyTorch GAN zoo natively supports [parallelisation across multiple
 GPUs](https://github.com/facebookresearch/pytorch_GAN_zoo/issues/57). The
@@ -55,41 +55,208 @@ echo 'CUDA_VISIBLE_DEVICES=0,1' > env.txt
 singularity exec --env-file env.txt pytorch_GAN_zoo.sif ...
 ```
 
-### Models
+## Fetching Datasets
 
-Here are examples showing how to use this container to train a PGAN model using
-the DTD and CIFAR-10 datasets.
+The container includes a convenience script for fetching datasets.
 
-See the [datasets directory](../../datasets/) for scripts to fetch these
-datasets.
+Each dataset can be fetched using,
 
-In each example the `--restart` flag is used so that checkpoints are
-periodically written during the training. The `--no_vis` flag is used to disable
-visdom visualisations.
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data <dataset>
+```
 
-#### DTD
+| `<dataset>` | description                                                                           |
+|-------------|---------------------------------------------------------------------------------------|
+| `dtd`       | [5,640 texture images in 47 categories](https://www.robots.ox.ac.uk/~vgg/data/dtd/)   |
+| `cifar10`   | [60,000 images of objects in 10 classes](https://www.cs.toronto.edu/~kriz/cifar.html) |
+
+Both datasets can be fetch with the following commands,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif get_data dtd
+singularity exec pytorch_GAN_zoo.sif get_data cifar10
+```
+
+[CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) is a dataset of more
+than 200,000 images of celebrities.  Downloading this dataset is more difficult
+to automate. The dataset can be downloaded using a browser
+[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ).
+
+## Example Workflow
+
+Here are examples showing how to use this container to train a
+[PGAN](https://arxiv.org/pdf/1710.10196.pdf) model using the CelebA, DTD and
+CIFAR-10 datasets and visualise the results.
+
+You can also use the [DCGAN](https://arxiv.org/pdf/1511.06434.pdf) model by
+passing `-m DCGAN` to `datasets.py`, `train.py` and `eval.py`. If you do not
+specify the model with `-m` PGAN will be used.
+
+## Preprocessing
+
+Some of the datasets require preprocessing before they can be used for training.
+The commands in this section assume the datasets are located in directories
+named as the `get_data` commands above would do, with the exception of CelebA.
+
+### CelebA
+
+The CelebA dataset requires some preprocessing to crop and orientate the
+images.
+
+Extract the dataset,
+
+```bash
+unzip img_align_celeba.zip
+```
+
+Use the `datasets.py` script to preprocess the images,
+
+```bash
+singularity exec pytorch_GAN_zoo.sif datasets.py celeba_cropped <path_to_celeba>/img_align_celeba/ -o celeba_cropped
+```
+
+This command will save the modified dataset in a directory called
+`celeba_cropped` and create a training configuration file `config_celeba_cropped.json`.
+
+### DTD
 
 The DTD dataset requires no preprocessing, so the datasets script simply creates
-a configuration file.
+a configuration file, `config_dtd.json`,
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py dtd <path to dtd>/images
-singularity exec pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+singularity exec --nv pytorch_GAN_zoo.sif datasets.py dtd dtd/images
 ```
 
-Where `<path to dtd>` is the path of the directory extracted from the dtd
-archive. This directory contains the subdirectories iamges, imdb and labels.
-
-#### CIFAR-10
+### CIFAR-10
 
 When training a model with the CIFAR-10 dataset some preprocessing is required.
-A processed dataset will be written to a directory delcared using the `-o` flag,
-`cifar-10` n this example.
 
 ```bash
-singularity exec pytorch_GAN_zoo.sif datasets.py cifar10 <path to cifar-10> -o cifar10
-singularity exec pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
+singularity exec --nv pytorch_GAN_zoo.sif datasets.py cifar10 cifar-10-batches-py -o cifar10
 ```
 
-Where `<path to cifar-10>` is the path of the directory containing the pickle
-files named `data_batch_{1..5}`.
+A processed dataset will be written to a directory called `cifar-10` and a
+configuration file named `config_cifar10.json` will be written.
+
+## Training
+
+Here are examples of training PGAN models using the three datasets as processed
+and configured above.
+
+Note that training these models takes approximately six days on a single Nvidia
+V100.
+
+In each example the `--restart` flag is used so that checkpoints are
+periodically written during the training. The `--no_vis` flag stops the training
+script from trying to send information to a
+[visdom](https://github.com/fossasia/visdom/) server.
+
+These examples assume that the configuration files are named as those created
+above.
+
+### CelebA
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped
+```
+
+### DTD
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --restart --no_vis -n dtd
+```
+
+### CIFAR-10
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
+```
+
+Each of these examples will write checkpoint and final weights to
+`output_networks/<model_name>` where `<model_name>` is the name you declare
+using the `-n` flag.
+
+## Image generation
+
+Using a trained model, a set of sample images can be generated using the
+`eval.py` script.
+
+The syntax for this is,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n <model_name> -m PGAN --save_dataset ./<output_directory> --size_dataset <data_set_size>
+```
+
+`<model_name>` is the same value as you used when training. `<data_set_size>`
+specifies the number of images to generate. The images will be saved in the
+`output_dataset` directory.
+
+For example, to generate 1000 images of fake celebrities using a model trained
+as above,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n celeba_cropped -m PGAN --save_dataset ./fake_celebs --size_dataset 1000
+```
+
+For data sets with categories, such as DTD and CIFAR10, images can be generated
+for a particular category. To see the available categories use the
+`--showLabels` flag. For example with CIFAR10,
+
+```bash
+$ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --showLabels
+...
+  --Main MAIN           ['automobile', 'bird', 'truck', 'airplane', 'cat',
+                          'horse', 'ship', 'frog', 'deer', 'dog']
+...
+```
+
+A set of generated 'frog' images can then be saved by using the category flag
+`--Main` and the label `frog`,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --Main frog --save_dataset ./frogs --size_dataset 100
+```
+
+## Running on HPC
+
+If you want to do repeated training runs (for example benchmarking) you can use
+the `-n` flag to set the output directory. This will prevent repeat runs of the
+same model and dataset from overwriting each other.
+
+The configuration files generated using `datasets.py` include relative paths to
+the data sets. The relative location of the datasets must therefore be the same
+when training.
+
+On HPC you will most likely want to move the datasets to take advantage of
+high-speed scratch disks. It is therefore most convenient to copy the
+configuration file and dataset to scratch space, bind that space and use `--pwd`
+flag to change to that directory inside the container.
+
+This extract from a SLURM batch script for the celeba dataset names the output
+directory based on SLURM job array indices and makes use of scratch space
+mounted into the container,
+
+```bash
+# Copy data to local scratch
+export scratch=<path_to_scratch>/$SLURM_JOB_ID
+mkdir -p "${scratch}/celeba_cropped"
+echo "Copying input data"
+cp -r celeba_cropped "${scratch}/celeba_cropped"
+echo "Copying configuration"
+cp config_celeba_cropped.json "${scratch}/config_celeba_cropped.json"
+
+# Define command
+command="singularity exec
+  --nv
+  --bind ${scratch}:/scratch_mount
+  --pwd /scratch_mount
+  pytorch_GAN_zoo.sif
+  train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+
+# Run the container
+$command
+
+# Copy output
+mkdir -p output_networks
+cp -r "${scratch}/output_networks/celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ./output_networks
+```
