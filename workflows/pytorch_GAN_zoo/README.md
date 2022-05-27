@@ -134,6 +134,7 @@ When training a model with the CIFAR-10 dataset some preprocessing is required.
 ```bash
 singularity exec --nv pytorch_GAN_zoo.sif datasets.py cifar10 cifar-10-batches-py -o cifar10
 ```
+
 A processed dataset will be written to a directory called `cifar-10` and a
 configuration file named `config_cifar10.json` will be written.
 
@@ -170,6 +171,7 @@ singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --res
 ```bash
 singularity exec --nv pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
 ```
+
 Each of these examples will write checkpoint and final weights to
 `output_networks/<model_name>` where `<model_name>` is the name you declare
 using the `-n` flag.
