@@ -143,8 +143,9 @@ Here are examples of training PGAN models using the three datasets as processed
 and configured above.
 
 In each example the `--restart` flag is used so that checkpoints are
-periodically written during the training. The `--no_vis` flag is used to disable
-visdom visualisations.
+periodically written during the training. The `--no_vis` flag stops the training
+script from trying to send information to a
+[visdom](https://github.com/fossasia/visdom/) server.
 
 Note that training these models takes approximately six days on a single Nvidia
 V100.
