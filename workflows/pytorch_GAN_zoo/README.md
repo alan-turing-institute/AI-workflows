@@ -82,7 +82,7 @@ than 200,000 images of celebrities.  Downloading this dataset is more difficult
 to automate. The dataset can be downloaded using a browser
 [here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ).
 
-## Story
+## Example Workflow
 
 Here are examples showing how to use this container to train a
 [PGAN](https://arxiv.org/pdf/1710.10196.pdf) model using the CelebA, DTD and
