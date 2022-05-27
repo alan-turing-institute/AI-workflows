@@ -12,6 +12,9 @@ rule 'MD004', :style => :dash
 # Enforce line length of 80 characters except in code blocks and tables
 rule 'MD013', :code_blocks => false, :tables => false
 
+# Allow multiple headers with the same content at different nestings
+rule 'MD024', :allow_different_nesting => true
+
 # Ignore blockquotes separated only be a blank line. This is a limitation of
 # some markdown parsers, not markdown itself.
 exclude_rule 'MD028'
