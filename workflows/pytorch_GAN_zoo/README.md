@@ -214,3 +214,47 @@ A set of generated 'frog' images can then be saved by using the category flag
 ```bash
 singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --Main frog --save_dataset ./frogs --size_dataset 100
 ```
+
+## Running on HPC
+
+If you want to do repeated training runs (for example benchmarking) you can use
+the `-n` flag to set the output directory. This will prevent repeat runs of the
+same model and dataset from overwriting each other.
+
+The configuration files generated using `datasets.py` include relative paths to
+the data sets. The relative location of the datasets must therefore be the same
+when training.
+
+On HPC you will most likely want to move the datasets to take advantage of
+high-speed scratch disks. It is therefore most convenient to copy the
+configuration file and dataset to scratch space, bind that space and use `--pwd`
+flag to change to that directory inside the container.
+
+This extract from a SLURM batch script for the celeba dataset names the output
+directory based on SLURM job array indices and makes use of scratch space
+mounted into the container,
+
+```bash
+# Copy data to local scratch
+export scratch=<path_to_scratch>/$SLURM_JOB_ID
+mkdir -p "${scratch}/celeba_cropped"
+echo "Copying input data"
+cp -r celeba_cropped "${scratch}/celeba_cropped"
+echo "Copying configuration"
+cp config_celeba_cropped.json "${scratch}/config_celeba_cropped.json"
+
+# Define command
+command="singularity exec
+  --nv
+  --bind ${scratch}:/scratch_mount
+  --pwd /scratch_mount
+  pytorch_GAN_zoo.sif
+  train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+
+# Run the container
+$command
+
+# Copy output
+mkdir -p output_networks
+cp -r "${scratch}/output_networks/celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ./output_networks
+```
