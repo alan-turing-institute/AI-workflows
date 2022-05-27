@@ -142,17 +142,16 @@ configuration file named `config_cifar10.json` will be written.
 Here are examples of training PGAN models using the three datasets as processed
 and configured above.
 
+Note that training these models takes approximately six days on a single Nvidia
+V100.
+
 In each example the `--restart` flag is used so that checkpoints are
 periodically written during the training. The `--no_vis` flag stops the training
 script from trying to send information to a
 [visdom](https://github.com/fossasia/visdom/) server.
 
-Note that training these models takes approximately six days on a single Nvidia
-V100.
-
-Each of these examples will write checkpoint and final weights to
-`output_networks/<model_name>` where `<model_name>` is the name you declare
-using the `-n` flag.
+These examples assume that the configuration files are named as those created
+above.
 
 ### CelebA
 
@@ -171,4 +170,40 @@ singularity exec --nv pytorch_GAN_zoo.sif train.py PGAN -c config_dtd.json --res
 ```bash
 singularity exec --nv pytorch_GAN_zoo.sif train.py -c config_cifar10.json --restart --no_vis -n cifar10
 ```
+Each of these examples will write checkpoint and final weights to
+`output_networks/<model_name>` where `<model_name>` is the name you declare
+using the `-n` flag.
 
+
+## Image generation
+
+Checkpoints of model weights will be saved in `output_networks/<model_name>`
+where `<model_name>` is the name you declared with the `-n` flag when training.
+For example, in the Celeba example above `<model_name>` was `celeba`.
+
+Using a trained model, a set of sample images can be generated. For example,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n <model_name> -m PGAN --save_dataset ./output_dataset --size_dataset <data_set_size>
+```
+
+`<data_set_size>` images will be saved in the `output_dataset` directory.
+
+For data sets with categories, such as DTD and CIFAR10, images can be generated
+for a particular category. To see the available categories use the
+`--showLabels` flag. For example with CIFAR10,
+
+```bash
+$ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10_584070_1 -m PGAN --showLabels
+...
+  --Main MAIN           ['automobile', 'bird', 'truck', 'airplane', 'cat',
+                          'horse', 'ship', 'frog', 'deer', 'dog']
+...
+```
+
+A set of generated 'frog' images can then be saved by using the category flag
+`--Main` and the label `frog`,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10_584070_1 -m PGAN --Main frog --save_dataset ./frogs --size_dataset 100
+```
