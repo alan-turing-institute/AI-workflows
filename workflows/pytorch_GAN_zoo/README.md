@@ -174,27 +174,34 @@ Each of these examples will write checkpoint and final weights to
 `output_networks/<model_name>` where `<model_name>` is the name you declare
 using the `-n` flag.
 
-
 ## Image generation
 
-Checkpoints of model weights will be saved in `output_networks/<model_name>`
-where `<model_name>` is the name you declared with the `-n` flag when training.
-For example, in the Celeba example above `<model_name>` was `celeba`.
+Using a trained model, a set of sample images can be generated using the
+`eval.py` script.
 
-Using a trained model, a set of sample images can be generated. For example,
+The syntax for this is,
 
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n <model_name> -m PGAN --save_dataset ./output_dataset --size_dataset <data_set_size>
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n <model_name> -m PGAN --save_dataset ./<output_directory> --size_dataset <data_set_size>
 ```
 
-`<data_set_size>` images will be saved in the `output_dataset` directory.
+`<model_name>` is the same value as you used when training. `<data_set_size>`
+specifies the number of images to generate. The images will be saved in the
+`output_dataset` directory.
+
+For example, to generate 1000 images of fake celebrities using a model trained
+as above,
+
+```bash
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n celeba_cropped -m PGAN --save_dataset ./fake_celebs --size_dataset 1000
+```
 
 For data sets with categories, such as DTD and CIFAR10, images can be generated
 for a particular category. To see the available categories use the
 `--showLabels` flag. For example with CIFAR10,
 
 ```bash
-$ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10_584070_1 -m PGAN --showLabels
+$ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --showLabels
 ...
   --Main MAIN           ['automobile', 'bird', 'truck', 'airplane', 'cat',
                           'horse', 'ship', 'frog', 'deer', 'dog']
@@ -205,5 +212,5 @@ A set of generated 'frog' images can then be saved by using the category flag
 `--Main` and the label `frog`,
 
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10_584070_1 -m PGAN --Main frog --save_dataset ./frogs --size_dataset 100
+singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --Main frog --save_dataset ./frogs --size_dataset 100
 ```
