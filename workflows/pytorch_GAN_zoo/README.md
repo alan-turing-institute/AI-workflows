@@ -80,7 +80,7 @@ singularity exec pytorch_GAN_zoo.sif get_data cifar10
 [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) is a dataset of more
 than 200,000 images of celebrities.  Downloading this dataset is more difficult
 to automate. The dataset can be downloaded using a browser
-[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ)
+[here](https://drive.google.com/file/d/0B7EVK8r0v71pZjFTYXZWM3FlRnM/view?resourcekey=0-dYn9z10tMJOBAkviAcfdyQ).
 
 ## Story
 
