@@ -95,6 +95,8 @@ specify the model with `-m` PGAN will be used.
 ## Preprocessing
 
 Some of the datasets require preprocessing before they can be used for training.
+The commands in this section assume the datasets are located in directories
+named as the `get_data` commands above would do, with the exception of CelebA.
 
 ### CelebA
 
