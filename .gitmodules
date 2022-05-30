@@ -2,5 +2,5 @@
 	path = workflows/pytorch_GAN_zoo/pytorch_GAN_zoo
 	url = https://github.com/facebookresearch/pytorch_GAN_zoo.git
 [submodule "workflows/3d_very_deep_vae"]
-	path = workflows/3d_very_deep_vae
+	path = workflows/3d_very_deep_vae/3d_very_deep_vae
 	url = https://github.com/high-dimensional/3d_very_deep_vae.git
