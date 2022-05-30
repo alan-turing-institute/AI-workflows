@@ -16,7 +16,7 @@ To build the singularity container use the build script in this directory.
 ```
 
 This script will try to use singularities [fakeroot
-support](https://sylabs.io/guides/3.5/user-guide/fakeroot.html) if you run as a
+support](https://sylabs.io/guides/main/user-guide/fakeroot.html) if you run as a
 non-root user. If this is not supported on your system you can run the script as
 root.
 
