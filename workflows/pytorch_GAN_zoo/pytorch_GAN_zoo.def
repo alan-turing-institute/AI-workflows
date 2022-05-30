@@ -13,7 +13,7 @@ From: ../../base_containers/pytorch/pytorch_1.9.1_cu_11.1.sif
 %post
     apt-get -y update
 
-    # Install convenience script depdencies
+    # Install convenience script dependencies
     apt-get -y install wget
 
     # Make convenience script executable
