@@ -27,7 +27,7 @@ in your current working directory.
 
 The scripts from [PyTorch GAN
 Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo) can be called with
-`singularity exec pytorch_GAN_zoo.sif <script name>`, for example
+`singularity exec pytorch_GAN_zoo.sif <script_name>`, for example
 
 ```bash
 singularity exec pytorch_GAN_zoo.sif train.py
