@@ -1,0 +1,27 @@
+BootStrap: localimage
+From: ../../base_containers/pytorch/pytorch_1.10.2_cu_11.3.sif
+
+%files
+    3d_very_deep_vae/ /
+
+%environment
+    # Add directory to path
+    export PATH=$PATH:/3d_very_deep_vae/scripts
+
+%post
+    # Make Python scripts executable
+    cd /3d_very_deep_vae/scripts
+    for i in *.py; do sed -i "1s|^|#!/usr/bin/env python3\n|" $i; done
+    chmod a+x *.py
+
+    # Remove torch and torchvision dependencies
+    cd /3d_very_deep_vae/requirements
+    sed -i "s/^ torch @//g" py38-linux-requirements.txt
+    sed -i "s/^ torchvision @//g" py38-linux-requirements.txt
+
+    # Install python dependencies
+    pip3 install --no-cache-dir -r py38-linux-requirements.txt
+
+    # Install package
+    cd /3d_very_deep_vae/
+    pip3 install .
