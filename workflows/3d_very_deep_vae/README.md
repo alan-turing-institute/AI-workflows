@@ -1,5 +1,14 @@
 # 3D Very Deep VAE
 
+This workflow containerises the [3D Very Deep
+VAE](https://github.com/high-dimensional/3d_very_deep_vae) package. That project
+involved training variational autoencoder models to generate three-dimensional
+images. Specifically, models have been trained on neuroimaging data and used to
+generate synthetic, volumetric brain images.
+
+The container image defined here can be used to generate a synthetic data set,
+train a model and assess that model.
+
 ## Building
 
 To build the singularity container use the build script in this directory.
