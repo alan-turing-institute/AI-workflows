@@ -189,7 +189,7 @@ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d outp
 
 `<model_name>` is the same value as you used when training. `<data_set_size>`
 specifies the number of images to generate. The images will be saved in the
-`output_dataset` directory.
+`<output_directory>` directory.
 
 For example, to generate 1000 images of fake celebrities using a model trained
 as above,
