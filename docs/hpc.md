@@ -37,15 +37,15 @@ Every 300 seconds this information will be saved to a file named using the
 Slurm array job and task IDs as discussed in [the Slurm
 section](#parametrising-job-arrays)
 
-This job is sent to the background and stopped after the `$COMMAND` has run.
+This job is sent to the background and stopped after the `$command` has run.
 
 ```bash
 nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
-GPU_WATCH_PID=$!
+gpu_watch_pid=$!
 
-$COMMAND
+$command
 
-kill $GPU_WATCH_PID
+kill $gpu_watch_pid
 ```
 
 ## Slurm
@@ -101,7 +101,7 @@ program.
 
 ```bash
 date --iso-8601=seconds --utc
-$COMMAND
+$command
 date --iso-8601=seconds --utc
 ```
 
@@ -200,32 +200,32 @@ The following snippet shows how this may be done.
 
 ```bash
 # Path to scratch disk on host
-HOST_SCRATCH_PATH=/scratch
+host_scratch_path=/scratch
 # Path to input data on host
-INPUT_DATA=/path/to/input/data
+input_data=/path/to/input/data
 # Get name of input data directory
-INPUT_DIR=$(basename $INPUT_DATA)
+input_dir=$(basename $input_data)
 # Path to place output data on host
-OUTPUT_DIR=/path/to/output/dir
+output_dir=/path/to/output/dir
 
 # Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-mkdir -p $JOB_SCRATCH_PATH
+job_scratch_path=$host_scratch_path/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+mkdir -p $job_scratch_path
 
 # Copy input data to scratch directory
-cp -r $INPUT_DATA $JOB_SCRATCH_PATH
+cp -r $input_data $job_scratch_path
 
 # Make output data directory
-mkdir -p $JOB_SCRATCH_PATH/output
+mkdir -p $job_scratch_path/output
 
 # Run the application
-singularity run --bind $JOB_SCRATCH_PATH:/scratch_mount --nv my_container.sif --input /scratch_mount/$INPUT_DIR --output /scratch_mount/output/
+singularity run --bind $job_scratch_path:/scratch_mount --nv my_container.sif --input /scratch_mount/$input_dir --output /scratch_mount/output/
 
 # Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+cp -r $job_scratch_path/output $output_dir/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 
 # Clean up
-rm -rf $JOB_SCRATCH_PATH
+rm -rf $job_scratch_path
 ```
 
 This example uses array job id and array task id to reduce the possibility of a
@@ -263,33 +263,33 @@ to run these (or other) calculations on clusters with the Slurm scheduler.
 ##########
 
 # Path to scratch disk on host
-HOST_SCRATCH_PATH=...
+host_scratch_path=...
 
 # Path to input data on host
-INPUT_DATA=...
+input_data=...
 
 # Get name of input data directory
-INPUT_DIR=$(basename $INPUT_DATA)
+input_dir=$(basename $input_data)
 
 # Path to place output data on host
-OUTPUT_DIR=...
+output_dir=...
 
 # Define command to run
-COMMAND=singularity exec --nv --bind $JOB_SCRATCH_PATH:/scratch_mount ...
+command=singularity exec --nv --bind $job_scratch_path:/scratch_mount ...
 
 ##########
 # Prepare data and directories in scratch space
 ##########
 
 # Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-mkdir -p $JOB_SCRATCH_PATH
+job_scratch_path=$host_scratch_path/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+mkdir -p $job_scratch_path
 
 # Copy input data to scratch directory
-cp -r $INPUT_DATA $JOB_SCRATCH_PATH
+cp -r $input_data $job_scratch_path
 
 # Make output data directory
-mkdir -p $JOB_SCRATCH_PATH/output
+mkdir -p $job_scratch_path/output
 
 ##########
 # Monitor and run the job
@@ -301,27 +301,27 @@ module load singularity
 
 # Monitor GPU usage
 nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
-GPU_WATCH_PID=$!
+gpu_watch_pid=$!
 
 # Run command
-START_TIME=$(date --iso-8601=seconds --utc)
-$COMMAND
-END_TIME=$(date --iso-8601=seconds --utc)
+start_time=$(date --iso-8601=seconds --utc)
+$command
+end_time=$(date --iso-8601=seconds --utc)
 
 ##########
 # Post job clean up
 ##########
 
 # Stop nvidia-smi dmon process
-kill $GPU_WATCH_PID
+kill $gpu_watch_pid
 
 # Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+cp -r $job_scratch_path/output $output_dir/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 
 # Clean up
-rm -rf $JOB_SCRATCH_PATH
+rm -rf $job_scratch_path
 
-echo "executed: $COMMAND"
-echo "started: $START_TIME"
-echo "finished: $END_TIME"
+echo "executed: $command"
+echo "started: $start_time"
+echo "finished: $end_time"
 ```
