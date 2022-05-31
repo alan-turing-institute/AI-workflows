@@ -191,48 +191,71 @@ Most HPC systems will offer some sort of fast, temporal and typically on-node,
 storage such as NVMe SSDs. In calculations where reading or writing data is a
 bottleneck, using this storage will be key to optimising performance.
 
-The details of this scratch space will differ between HPC system and changes
-will need to be made when transferring workflows between systems. However, a
-combination of templating and singularity binds can make these adjustments less
-tedious and more robust.
+The location of scratch space will differ between HPC systems so it is
+unavoidable to have some platform specific data in batch scripts. However, with
+a sensible template, taking advantage of Singularity's `--bind` and `--pwd`
+flags these adjustments can be made less tedious and more robust.
 
 The following snippet shows how this may be done.
 
 ```bash
-# Path to scratch disk on host
-host_scratch_path=/scratch
-# Path to input data on host
-input_data=/path/to/input/data
-# Get name of input data directory
-input_dir=$(basename $input_data)
-# Path to place output data on host
-output_dir=/path/to/output/dir
+scratch_host="<path_to_scratch>"
+inputs="<input_files_and_directories>"
+outputs="<output_files_and_directories>"
 
-# Create a directory on scratch disk for this job
-job_scratch_path=$host_scratch_path/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-mkdir -p $job_scratch_path
+# Scratch directory
+scratch=$scratch_host/$SLURM_JOB_ID
+mkdir -p $scratch
 
-# Copy input data to scratch directory
-cp -r $input_data $job_scratch_path
-
-# Make output data directory
-mkdir -p $job_scratch_path/output
+# Copy inputs to scratch
+for item in $inputs; do
+    echo "Copying $item to scratch"
+    cp -r $item $scratch
+done
 
 # Run the application
-singularity run --bind $job_scratch_path:/scratch_mount --nv my_container.sif --input /scratch_mount/$input_dir --output /scratch_mount/output/
+singularity exec \
+--nv \
+--bind $scratch:/scratch_mount \
+--pwd /scratch_mount
+<container.sif> <singularity_command>
 
 # Copy output from scratch
-cp -r $job_scratch_path/output $output_dir/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+for item in $outputs; do
+    echo "Copying $item from scratch"
+    cp -r $scratch/$item ./
+done
 
 # Clean up
-rm -rf $job_scratch_path
+rm -rf $scratch
 ```
 
+`<path_to_scratch>` path to scratch directory on host _e.g._ `/scratch`.
+`<input_files_and_directories>` space separated list of files and directories
+needed for the job _e.g._ `input_file.txt data_directory`.
+`<output_files_and_directories>` space separated list of files and directories
+produced by the job to be copied back.
+
+The input files and directories declared are copied to `$scratch`. This
+directory is then mounted in the container at `/scratch_mount` with the `--bind
+$scratch:/scratch_mount` argument. The `--pwd /scratch_mount` flag ensures that
+the command (`<singularity_command>`) is executed in the `/scratch_mount`
+directory inside the container, _i.e._ where the input data is. This way the
+input data is both stored on the fast scratch storage and visible to the
+container process.
+
+Note, simply changing directory to `$scratch` before running singularity is
+unlikely to work. When Singularity is run inside of a users home directory the
+current working directory is mounted and used as the initial directory for the
+container process. Scratch space will almost certainly be outside of a users
+home directory, in which case the current working directory is not mounted and
+the initial directory inside the container is `/`.
+
 This example uses array job id and array task id to reduce the possibility of a
-name clash when creating a directory on the scratch disk and when copying
-outputs back.  Ideally each job will be given a scratch directory in a unique
-namespace so there is no possibility of file or directory names clashing
-between different jobs.
+name clash when using the scratch space. Ideally each job will be given a
+scratch directory in a unique namespace so there is no possibility of file or
+directory names clashing between different jobs, but this will not be the case
+on all HPC systems.
 
 ### Template
 
