@@ -9,6 +9,8 @@ generate synthetic, volumetric brain images.
 The container image defined here can be used to generate a synthetic data set,
 train a model and assess that model.
 
+The container image supports CUDA version 11.3 on the host.
+
 ## Building
 
 To build the singularity container use the build script in this directory.
