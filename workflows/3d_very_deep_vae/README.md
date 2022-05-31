@@ -85,7 +85,7 @@ targets a different resolution for generated images.
 All three example should fit within 32GiB of device memory. For GPUs with less
 memory, the `batch_size` variable in the configuration files can be decreased.
 
-Use The `train_vae_model.py` script to train a model
+Use the `train_vae_model.py` script to train a model
 
 ```bash
 singularity exec --nv 3d_very_deep_vae.sif train_vae_model.py --json_config_file <config_file>  --nifti_dir <data_directory> --output_dir <output_directory>
