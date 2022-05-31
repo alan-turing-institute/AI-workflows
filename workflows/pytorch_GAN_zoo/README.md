@@ -1,11 +1,16 @@
 # PyTorch GAN Zoo
 
-This example builds a singularity container for [Facebook Research's PyTorch GAN
-Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo).
+This workflow containerises [Facebook Research's PyTorch GAN
+Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo). That code is a
+toolbox for training a selection of [generative adversarial
+networks](https://en.wikipedia.org/wiki/Generative_adversarial_network) on
+popular image datasets.
 
-The singularity container will allow you to call all the scripts from the
-project and includes are requirements. The container supports CUDA version 11.1
-on the host.
+Once a model has been trained it can be used to generate new images. For
+example, after training a model on pictures of celebrities a set of 'fake'
+celebrity pictures can be created.
+
+The container supports CUDA version 11.1 on the host.
 
 ## Building
 
@@ -189,7 +194,7 @@ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d outp
 
 `<model_name>` is the same value as you used when training. `<data_set_size>`
 specifies the number of images to generate. The images will be saved in the
-`output_dataset` directory.
+`<output_directory>` directory.
 
 For example, to generate 1000 images of fake celebrities using a model trained
 as above,
