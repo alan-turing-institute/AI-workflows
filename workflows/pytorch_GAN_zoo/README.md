@@ -16,7 +16,7 @@ To build the singularity container use the build script in this directory.
 ```
 
 This script will try to use singularities [fakeroot
-support](https://sylabs.io/guides/3.5/user-guide/fakeroot.html) if you run as a
+support](https://sylabs.io/guides/main/user-guide/fakeroot.html) if you run as a
 non-root user. If this is not supported on your system you can run the script as
 root.
 
@@ -27,7 +27,7 @@ in your current working directory.
 
 The scripts from [PyTorch GAN
 Zoo](https://github.com/facebookresearch/pytorch_GAN_zoo) can be called with
-`singularity exec pytorch_GAN_zoo.sif <script name>`, for example
+`singularity exec pytorch_GAN_zoo.sif <script_name>`, for example
 
 ```bash
 singularity exec pytorch_GAN_zoo.sif train.py
