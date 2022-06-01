@@ -114,7 +114,7 @@ The programs start and end times will then be recorded in the STDOUT file.
 ### Repeated runs (job arrays)
 
 If you are assessing a systems performance you will likely want to repeat the
-same calculation a number of times until you are satisfied with you estimate of
+same calculation a number of times until you are satisfied with your estimate of
 mean performance. It would be possible to simply repeatedly submit the same job
 and many people are tempted to engineer their own scripts to do so. However,
 Slurm provides a way to submit groups of jobs that you will most likely find
@@ -262,89 +262,6 @@ on all HPC systems.
 Collecting the above tips, here is a template batch script that can be adapted
 to run these (or other) calculations on clusters with the Slurm scheduler.
 
-```bash
-#!/bin/bash
-
-##########
-# Slurm parameters
-##########
-
-# set the number of nodes
-#SBATCH --nodes=...
-
-# set max wallclock time
-#SBATCH --time=...
-
-# set name of job
-#SBATCH --job-name=...
-
-# set number of GPUs
-#SBATCH --gres=gpu:...
-
-##########
-# Job parameters
-##########
-
-# Path to scratch disk on host
-host_scratch_path=...
-
-# Path to input data on host
-input_data=...
-
-# Get name of input data directory
-input_dir=$(basename $input_data)
-
-# Path to place output data on host
-output_dir=...
-
-# Define command to run
-command=singularity exec --nv --bind $job_scratch_path:/scratch_mount ...
-
-##########
-# Prepare data and directories in scratch space
-##########
-
-# Create a directory on scratch disk for this job
-job_scratch_path=$host_scratch_path/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-mkdir -p $job_scratch_path
-
-# Copy input data to scratch directory
-cp -r $input_data $job_scratch_path
-
-# Make output data directory
-mkdir -p $job_scratch_path/output
-
-##########
-# Monitor and run the job
-##########
-
-# load modules (will be system dependent, may not be necessary)
-module purge
-module load singularity
-
-# Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
-gpu_watch_pid=$!
-
-# Run command
-start_time=$(date --iso-8601=seconds --utc)
-$command
-end_time=$(date --iso-8601=seconds --utc)
-
-##########
-# Post job clean up
-##########
-
-# Stop nvidia-smi dmon process
-kill $gpu_watch_pid
-
-# Copy output from scratch
-cp -r $job_scratch_path/output $output_dir/output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-
-# Clean up
-rm -rf $job_scratch_path
-
-echo "executed: $command"
-echo "started: $start_time"
-echo "finished: $end_time"
-```
+[batch_template.sh](batch_template.sh) is a template batch script putting
+together all of the tips above. This template can be adapted to run the
+AI workflows. More complete examples are included alongside each workflow.
