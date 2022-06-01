@@ -4,19 +4,22 @@
 # Slurm parameters
 ##########
 
-# set QoS
+# Set QoS
 #SBATCH --qos=...
 
-# set the number of nodes
+# Sert partition
+#SBATCH --partition=...
+
+# Set the number of nodes
 #SBATCH --nodes=...
 
-# set max wallclock time
+# Set max wallclock time
 #SBATCH --time=...
 
-# set name of job
+# Set name of job
 #SBATCH --job-name=...
 
-# set number of GPUs
+# Set number of GPUs
 #SBATCH --gres=gpu:...
 
 ##########
