@@ -8,9 +8,14 @@
 # export LOCAL_SPECS_DIR=/workspace/yolo_v4/specs
 # export LOCAL_PROJECT_DIR=/workspace
 
+func_download(){
+	echo "Downloading model and datasets..."
+	/bin/bash download_data.sh
+}
+
 func_verify(){
 	# env & dataset verification
-	echo "Verifying Environment and data..."
+	echo "Verifying environment and data..."
 	python3 jamcam/verify.py
 }
 
@@ -65,7 +70,7 @@ func_vis(){
 	echo "Displaying visualisation..." \
 	yolo_v4 inference -i $DATA_DOWNLOAD_DIR/test_samples \
                       -o $USER_EXPERIMENT_DIR/yolo_infer_images \
-                      -e $SPECS_DIR/yolo_v4_retrain_resnet18_kitti.txt \
+                      -e $SPECS_DIR/yolo_v4_retrain_resnet18_jamcam.txt \
                       -m $USER_EXPERIMENT_DIR/experiment_dir_retrain/weights/yolov4_resnet18_epoch_$EPOCH.tlt \
                       -l $USER_EXPERIMENT_DIR/yolo_infer_labels \
                       -k $KEY
@@ -76,13 +81,14 @@ func_export_model(){
 	yolo_v4 export -m $USER_EXPERIMENT_DIR/experiment_dir_retrain/weights/yolov4_resnet18_epoch_$EPOCH.tlt \
                    -k $KEY \
                    -o $USER_EXPERIMENT_DIR/export/yolov4_resnet18_epoch_$EPOCH.etlt \
-                   -e $SPECS_DIR/yolo_v4_retrain_resnet18_kitti.txt \
+                   -e $SPECS_DIR/yolo_v4_retrain_resnet18_jamcam.txt \
                    --batch_size 16 \
                    --data_type fp32
 }
 
 while [ -n "$1" ]; do
 	case "$1" in
+	--download) download ;;
 	--verify) func_verify ;;
 	--gen-valid) func_gen_valid ;;
 	--tune-bdb) func_tune_bdb ;;
