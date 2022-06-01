@@ -205,12 +205,12 @@ outputs="<output_files_and_directories>"
 
 # Scratch directory
 scratch="$scratch_host/$SLURM_JOB_ID"
-mkdir -p $scratch
+mkdir -p "$scratch"
 
 # Copy inputs to scratch
 for item in $inputs; do
     echo "Copying $item to scratch"
-    cp -r $item $scratch
+    cp -r "$item" "$scratch"
 done
 
 # Run the application
@@ -223,11 +223,11 @@ singularity exec \
 # Copy output from scratch
 for item in $outputs; do
     echo "Copying $item from scratch"
-    cp -r $scratch/$item ./
+    cp -r "$scratch/$item" ./
 done
 
 # Clean up
-rm -rf $scratch
+rm -rf "$scratch"
 ```
 
 `<path_to_scratch>` path to scratch directory on host _e.g._ `/scratch`.
