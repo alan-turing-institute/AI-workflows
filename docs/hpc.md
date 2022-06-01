@@ -204,7 +204,7 @@ inputs="<input_files_and_directories>"
 outputs="<output_files_and_directories>"
 
 # Scratch directory
-scratch=$scratch_host/$SLURM_JOB_ID
+scratch="$scratch_host/$SLURM_JOB_ID"
 mkdir -p $scratch
 
 # Copy inputs to scratch
