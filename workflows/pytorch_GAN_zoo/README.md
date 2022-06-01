@@ -129,7 +129,7 @@ The DTD dataset requires no preprocessing, so the datasets script simply creates
 a configuration file, `config_dtd.json`,
 
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif datasets.py dtd dtd/images
+singularity exec pytorch_GAN_zoo.sif datasets.py dtd dtd/images
 ```
 
 ### CIFAR-10
@@ -137,7 +137,7 @@ singularity exec --nv pytorch_GAN_zoo.sif datasets.py dtd dtd/images
 When training a model with the CIFAR-10 dataset some preprocessing is required.
 
 ```bash
-singularity exec --nv pytorch_GAN_zoo.sif datasets.py cifar10 cifar-10-batches-py -o cifar10
+singularity exec pytorch_GAN_zoo.sif datasets.py cifar10 cifar-10-batches-py -o cifar10
 ```
 
 A processed dataset will be written to a directory called `cifar-10` and a
@@ -203,9 +203,9 @@ as above,
 singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n celeba_cropped -m PGAN --save_dataset ./fake_celebs --size_dataset 1000
 ```
 
-For data sets with categories, such as DTD and CIFAR10, images can be generated
+For data sets with categories, such as DTD and CIFAR-10, images can be generated
 for a particular category. To see the available categories use the
-`--showLabels` flag. For example with CIFAR10,
+`--showLabels` flag. For example with CIFAR-10,
 
 ```bash
 $ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d output_networks -n cifar10 -m PGAN --showLabels
@@ -237,31 +237,15 @@ high-speed scratch disks. It is therefore most convenient to copy the
 configuration file and dataset to scratch space, bind that space and use `--pwd`
 flag to change to that directory inside the container.
 
-This extract from a SLURM batch script for the celeba dataset names the output
-directory based on SLURM job array indices and makes use of scratch space
-mounted into the container,
+The [`batch_scripts`](./batch_scripts) directory contains template Slurm batch
+scripts for training models on the [CelebA](batch_scripts/train_celeba.sh),
+[CIFAR-10](batch_scripts/train_cifar10.sh) and [DTD](batch_scripts/train_dtd.sh)
+datasets. These templates assume that data directories and configuration files
+are named as those created above. They demonstrate the advice for running
+on HPC explained [here](../../docs/hpc.md)
+
+To submit a job use `sbatch` with the `--array` flag. For example
 
 ```bash
-# Copy data to local scratch
-export scratch=<path_to_scratch>/$SLURM_JOB_ID
-mkdir -p "${scratch}/celeba_cropped"
-echo "Copying input data"
-cp -r celeba_cropped "${scratch}/celeba_cropped"
-echo "Copying configuration"
-cp config_celeba_cropped.json "${scratch}/config_celeba_cropped.json"
-
-# Define command
-command="singularity exec
-  --nv
-  --bind ${scratch}:/scratch_mount
-  --pwd /scratch_mount
-  pytorch_GAN_zoo.sif
-  train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
-
-# Run the container
-$command
-
-# Copy output
-mkdir -p output_networks
-cp -r "${scratch}/output_networks/celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}" ./output_networks
+sbatch --array=1 train_celeba.sh
 ```
