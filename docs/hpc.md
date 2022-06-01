@@ -89,7 +89,7 @@ Submitted batch job 43
 Or in a batch script
 
 ```bash
-##SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:1
 ```
 
 ### Benchmarking
