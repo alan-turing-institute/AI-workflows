@@ -48,6 +48,35 @@ $command
 kill $gpu_watch_pid
 ```
 
+## Modules
+
+HPC systems will almost certainly have a module system which helps manage and
+isolate the many (potentially conflicting) packages users want. Although
+singularity allows us to package most workflow requirements inside a container
+image, using GPUs requires a compatible set of driver and library packages on the
+host. You may, therefore, need to load the appropriate modules to run the
+workflows.
+
+There are two common module systems,
+[Lmod](https://lmod.readthedocs.io/en/latest/index.html) and [Environment
+Modules](https://modules.readthedocs.io/en/latest/). For a user the differences
+between the two are not important as the commands are the same.
+
+To list the available modules
+
+```bash
+module av
+```
+
+And to load a particular module
+
+```bash
+module load <module_name>
+```
+
+When submitting batch jobs any `module load` commands should be placed in your
+batch script.
+
 ## Slurm
 
 When running these workflows on HPC you will most likely use the
@@ -262,6 +291,6 @@ on all HPC systems.
 Collecting the above tips, here is a template batch script that can be adapted
 to run these (or other) calculations on clusters with the Slurm scheduler.
 
-[batch_template.sh](batch_template.sh) is a template batch script putting
-together all of the tips above. This template can be adapted to run the
-AI workflows. More complete examples are included alongside each workflow.
+[`batch_template.sh`](batch_template.sh) is a template batch script putting
+together all of the tips above. This template can be adapted to run the AI
+workflows. More complete examples are included alongside each workflow.
