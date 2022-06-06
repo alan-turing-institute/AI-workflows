@@ -25,7 +25,7 @@ scripts = [
             'job_name': 'pytorch_gan_zoo_celeba',
             'gpus': '1',
             'inputs': 'celeba_cropped config_celeba_cropped.json',
-            'outputs': 'output_networks/celeba_cropped_$jobid',
+            'outputs': 'output_networks/celeba_cropped_$job_id',
             'container': 'pytorch_GAN_zoo.sif',
             'container_command': (
                 'train.py PGAN -c config_celeba_cropped.json '

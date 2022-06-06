@@ -46,7 +46,7 @@ scratch_host="%scratch_host"
 # Files and directories to copy to scratch before the job
 inputs="celeba_cropped config_celeba_cropped.json"
 # File and directories to copy from scratch after the job
-outputs="output_networks/celeba_cropped_$jobid"
+outputs="output_networks/celeba_cropped_$job_id"
 # Singularity container
 container="pytorch_GAN_zoo.sif"
 # Singularity 'exec' command
