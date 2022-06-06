@@ -5,29 +5,29 @@
 ##########
 
 # Set QoS
-#SBATCH --qos=...
+#SBATCH --qos=%qos
 
 # Sert partition
-#SBATCH --partition=...
+#SBATCH --partition=%partition
 
 # Set the number of nodes
-#SBATCH --nodes=...
+#SBATCH --nodes=%nodes
 
 # Set max wallclock time
-#SBATCH --time=...
+#SBATCH --time=%wall_time
 
 # Set name of job
-#SBATCH --job-name=...
+#SBATCH --job-name=%job_name
 
 # Set number of GPUs
-#SBATCH --gres=gpu:...
+#SBATCH --gres=gpu:%gpus
 
 ##########
 # Modules
 ##########
 
 module purge
-module load ...
+module load %modules
 
 ##########
 # Job parameters
@@ -42,15 +42,15 @@ else
 fi
 
 # Path to scratch directory on host
-scratch_host="..."
+scratch_host="%scratch_host"
 # Files and directories to copy to scratch before the job
-inputs="..."
+inputs="%inputs"
 # File and directories to copy from scratch after the job
-outputs="..."
+outputs="%outputs"
 # Singularity container
-container="... .sif"
+container="%container"
 # Singularity 'exec' command
-container_command="..."
+container_command="%container_command"
 # Command to execute
 run_command="singularity exec
   --nv

@@ -71,7 +71,7 @@ module av
 And to load a particular module
 
 ```bash
-module load <module_name>
+module load ...
 ```
 
 When submitting batch jobs any `module load` commands should be placed in your
@@ -130,7 +130,7 @@ program.
 
 ```bash
 date --iso-8601=seconds --utc
-$command
+# Commands to time
 date --iso-8601=seconds --utc
 ```
 
@@ -228,9 +228,9 @@ flags these adjustments can be made less tedious and more robust.
 The following snippet shows how this may be done.
 
 ```bash
-scratch_host="<path_to_scratch>"
-inputs="<input_files_and_directories>"
-outputs="<output_files_and_directories>"
+scratch_host="%scratch_host"
+inputs="%inputs"
+outputs="%outputs"
 
 # Scratch directory
 scratch="$scratch_host/$SLURM_JOB_ID"
@@ -247,7 +247,7 @@ singularity exec \
 --nv \
 --bind $scratch:/scratch_mount \
 --pwd /scratch_mount
-<container.sif> <singularity_command>
+%container %container_command
 
 # Copy output from scratch
 for item in $outputs; do
@@ -259,16 +259,16 @@ done
 rm -rf "$scratch"
 ```
 
-`<path_to_scratch>` path to scratch directory on host _e.g._ `/scratch`.
-`<input_files_and_directories>` space separated list of files and directories
-needed for the job _e.g._ `input_file.txt data_directory`.
-`<output_files_and_directories>` space separated list of files and directories
-produced by the job to be copied back.
+`%scratch_host` is the path to scratch directory on host, for example
+`/scratch`. `%inputs` is a *space separated* list of files and directories
+needed for the job, for example`input_file.txt data_directory`.  `%outputs` is
+also a space separated list of files and directories. These are files and
+directories produced by the job that should be kept.
 
 The input files and directories declared are copied to `$scratch`. This
 directory is then mounted in the container at `/scratch_mount` with the `--bind
 $scratch:/scratch_mount` argument. The `--pwd /scratch_mount` flag ensures that
-the command (`<singularity_command>`) is executed in the `/scratch_mount`
+the command (`%container_command`) is executed in the `/scratch_mount`
 directory inside the container, _i.e._ where the input data is. This way the
 input data is both stored on the fast scratch storage and visible to the
 container process.
