@@ -18,7 +18,7 @@ class MyTemplate(Template):
 scripts = [
     Script(
         name='train_celeba.sh',
-        path=Path('../workflows/pytorch_GAN_zoo/batch_scripts/'),
+        path=Path('pytorch_GAN_zoo/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '3-00:00:00',
@@ -35,7 +35,7 @@ scripts = [
     ),
     Script(
         name='train_cifar10.sh',
-        path=Path('../workflows/pytorch_GAN_zoo/batch_scripts/'),
+        path=Path('pytorch_GAN_zoo/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '2-00:00:00',
@@ -52,7 +52,7 @@ scripts = [
     ),
     Script(
         name='train_dtd.sh',
-        path=Path('../workflows/pytorch_GAN_zoo/batch_scripts/'),
+        path=Path('pytorch_GAN_zoo/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '6-00:00:00',
@@ -69,7 +69,7 @@ scripts = [
     ),
     Script(
         name='3d_very_deep_vae_32.sh',
-        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '02:00:00',
@@ -87,7 +87,7 @@ scripts = [
     ),
     Script(
         name='3d_very_deep_vae_64.sh',
-        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '10:00:00',
@@ -105,7 +105,7 @@ scripts = [
     ),
     Script(
         name='3d_very_deep_vae_128.sh',
-        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
             'wall_time': '2-00:00:00',

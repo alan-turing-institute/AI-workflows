@@ -291,6 +291,6 @@ on all HPC systems.
 Collecting the above tips, here is a template batch script that can be adapted
 to run these (or other) calculations on clusters with the Slurm scheduler.
 
-[`batch_template.sh`](batch_template.sh) is a template batch script putting
-together all of the tips above. This template can be adapted to run the AI
-workflows. More complete examples are included alongside each workflow.
+[`batch_template.sh`](workflows/batch_template.sh) is a template batch script
+putting together all of the tips above. This template can be adapted to run the
+AI workflows. More complete examples are included alongside each workflow.
