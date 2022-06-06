@@ -242,7 +242,7 @@ scripts for training models on the [CelebA](batch_scripts/train_celeba.sh),
 [CIFAR-10](batch_scripts/train_cifar10.sh) and [DTD](batch_scripts/train_dtd.sh)
 datasets. These templates assume that data directories and configuration files
 are named as those created above. They demonstrate the advice for running
-on HPC explained [here](../../docs/hpc.md)
+on HPC explained [here](../../hpc.md)
 
 To submit a job use `sbatch` with the `--array` flag. For example
 
