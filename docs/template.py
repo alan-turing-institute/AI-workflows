@@ -66,7 +66,61 @@ scripts = [
                 '--restart --no_vis -n dtd_$job_id'
             )
         }
-    )
+    ),
+    Script(
+        name='3d_very_deep_vae_32.sh',
+        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        mapping={
+            'nodes': '1',
+            'wall_time': '02:00:00',
+            'job_name': '3d_very_deep_vae_32',
+            'gpus': '1',
+            'inputs': 'data VeryDeepVAE_32x32x32.json',
+            'outputs': 'output_$job_id',
+            'container': '3d_very_deep_vae.sif',
+            'container_command': (
+                'train_vae_model.py '
+                '--json_config_file VeryDeepVAE_32x32x32.json '
+                '--nifti_dir ./data --output_dir ./output'
+            )
+        }
+    ),
+    Script(
+        name='3d_very_deep_vae_64.sh',
+        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        mapping={
+            'nodes': '1',
+            'wall_time': '10:00:00',
+            'job_name': '3d_very_deep_vae_64',
+            'gpus': '1',
+            'inputs': 'data VeryDeepVAE_64x64x64.json',
+            'outputs': 'output_$job_id',
+            'container': '3d_very_deep_vae.sif',
+            'container_command': (
+                'train_vae_model.py '
+                '--json_config_file VeryDeepVAE_64x64x64.json '
+                '--nifti_dir ./data --output_dir ./output'
+            )
+        }
+    ),
+    Script(
+        name='3d_very_deep_vae_128.sh',
+        path=Path('../workflows/3d_very_deep_vae/batch_scripts/'),
+        mapping={
+            'nodes': '1',
+            'wall_time': '2-00:00:00',
+            'job_name': '3d_very_deep_vae_128',
+            'gpus': '1',
+            'inputs': 'data VeryDeepVAE_128x128x128.json',
+            'outputs': 'output_$job_id',
+            'container': '3d_very_deep_vae.sif',
+            'container_command': (
+                'train_vae_model.py '
+                '--json_config_file VeryDeepVAE_128x128x128.json '
+                '--nifti_dir ./data --output_dir ./output'
+            )
+        }
+    ),
 ]
 
 
