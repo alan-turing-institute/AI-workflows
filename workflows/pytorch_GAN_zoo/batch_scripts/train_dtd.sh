@@ -70,7 +70,7 @@ done
 ##########
 
 # Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 1 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 1 > "dmon_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
 gpu_watch_pid=$!
 
 # run the application
