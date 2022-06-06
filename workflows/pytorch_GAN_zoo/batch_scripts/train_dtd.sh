@@ -5,10 +5,10 @@
 ##########
 
 # Set QoS
-#SBATCH --qos=...
+#SBATCH --qos=%qos
 
 # Set partition
-#SBATCH --partition=...
+#SBATCH --partition=%partition
 
 # Set the number of nodes
 #SBATCH --nodes=1
@@ -27,22 +27,30 @@
 ##########
 
 module purge
-module load ...
+module load %modules
 
 ##########
 # Job parameters
 ##########
 
+# Unique Job ID, either the Slurm job ID or Slurm array ID and task ID when an
+# array job
+if [ "$SLURM_ARRAY_JOB_ID" ]; then
+    job_id="${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+else
+    job_id="$SLURM_JOB_ID"
+fi
+
 # Path to scratch directory on host
-scratch_host="..."
+scratch_host="%scratch_host"
 # Files and directories to copy to scratch before the job
 inputs="dtd config_dtd.json"
 # File and directories to copy from scratch after the job
-outputs="output_networks/dtd_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+outputs="output_networks/dtd_$job_id"
 # Singularity container
 container="pytorch_GAN_zoo.sif"
 # Singularity 'exec' command
-container_command="train.py PGAN -c config_dtd.json --restart --no_vis -n dtd_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+container_command="train.py PGAN -c config_dtd.json --restart --no_vis -n dtd_$job_id"
 # Command to execute
 run_command="singularity exec
   --nv
@@ -56,7 +64,7 @@ run_command="singularity exec
 ##########
 
 # Scratch directory
-scratch="$scratch_host/$SLURM_JOB_ID"
+scratch="$scratch_host/$job_id"
 mkdir -p "$scratch"
 
 # Copy inputs to scratch
@@ -70,7 +78,7 @@ done
 ##########
 
 # Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 1 > "dmon_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 1 > "dmon_$job_id".txt &
 gpu_watch_pid=$!
 
 # run the application

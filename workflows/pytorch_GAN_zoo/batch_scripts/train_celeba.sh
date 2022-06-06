@@ -5,16 +5,16 @@
 ##########
 
 # Set QoS
-#SBATCH --qos=...
+#SBATCH --qos=%qos
 
 # Set partition
-#SBATCH --partition=...
+#SBATCH --partition=%partition
 
 # Set the number of nodes
 #SBATCH --nodes=1
 
 # Set max wallclock time
-#SBATCH --time=6-00:00:00
+#SBATCH --time=3-00:00:00
 
 # Set name of job
 #SBATCH --job-name=pytorch_gan_zoo_celeba
@@ -27,22 +27,30 @@
 ##########
 
 module purge
-module load ...
+module load %modules
 
 ##########
 # Job parameters
 ##########
 
+# Unique Job ID, either the Slurm job ID or Slurm array ID and task ID when an
+# array job
+if [ "$SLURM_ARRAY_JOB_ID" ]; then
+    job_id="${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+else
+    job_id="$SLURM_JOB_ID"
+fi
+
 # Path to scratch directory on host
-scratch_host="..."
+scratch_host="%scratch_host"
 # Files and directories to copy to scratch before the job
 inputs="celeba_cropped config_celeba_cropped.json"
 # File and directories to copy from scratch after the job
-outputs="output_networks/celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+outputs="output_networks/celeba_cropped_$jobid"
 # Singularity container
 container="pytorch_GAN_zoo.sif"
 # Singularity 'exec' command
-container_command="train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}"
+container_command="train.py PGAN -c config_celeba_cropped.json --restart --no_vis -n celeba_cropped_$job_id"
 # Command to execute
 run_command="singularity exec
   --nv
@@ -56,7 +64,7 @@ run_command="singularity exec
 ##########
 
 # Scratch directory
-scratch="$scratch_host/$SLURM_JOB_ID"
+scratch="$scratch_host/$job_id"
 mkdir -p "$scratch"
 
 # Copy inputs to scratch
@@ -70,7 +78,7 @@ done
 ##########
 
 # Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 1 > "dmon_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 1 > "dmon_$job_id".txt &
 gpu_watch_pid=$!
 
 # run the application

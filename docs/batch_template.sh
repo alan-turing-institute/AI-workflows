@@ -7,7 +7,7 @@
 # Set QoS
 #SBATCH --qos=%qos
 
-# Sert partition
+# Set partition
 #SBATCH --partition=%partition
 
 # Set the number of nodes
