@@ -43,6 +43,7 @@ fi
 
 # Path to scratch directory on host
 scratch_host="%scratch_host"
+scratch="$scratch_host/$job_id"
 # Files and directories to copy to scratch before the job
 inputs="data VeryDeepVAE_64x64x64.json"
 # File and directories to copy from scratch after the job
@@ -63,11 +64,8 @@ run_command="singularity exec
 # Set up scratch
 ##########
 
-# Scratch directory
-scratch="$scratch_host/$job_id"
-mkdir -p "$scratch"
-
 # Copy inputs to scratch
+mkdir -p "$scratch"
 for item in $inputs; do
     echo "Copying $item to scratch"
     cp -r "$item" "$scratch"

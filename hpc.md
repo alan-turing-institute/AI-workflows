@@ -229,14 +229,12 @@ The following snippet shows how this may be done.
 
 ```bash
 scratch_host="%scratch_host"
+scratch="$scratch_host/$SLURM_JOB_ID"
 inputs="%inputs"
 outputs="%outputs"
 
-# Scratch directory
-scratch="$scratch_host/$SLURM_JOB_ID"
-mkdir -p "$scratch"
-
 # Copy inputs to scratch
+mkdir -p "$scratch"
 for item in $inputs; do
     echo "Copying $item to scratch"
     cp -r "$item" "$scratch"
