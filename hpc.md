@@ -33,14 +33,10 @@ display
 - Processor and memory clock speeds in MHz
 - PCIe throughput input (Rx) and output (Tx) in MB/s
 
-Every second this information will be saved to a file named using the
-Slurm array job and task IDs as discussed in [the Slurm
-section](#parametrising-job-arrays)
-
 This job is sent to the background and stopped after the `$command` has run.
 
 ```bash
-nvidia-smi dmon -o TD -s puct -d 1 > "dmon-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}".txt &
+nvidia-smi dmon -o TD -s puct -d 1 > dmon.txt &
 gpu_watch_pid=$!
 
 $command
