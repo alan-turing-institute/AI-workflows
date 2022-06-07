@@ -136,7 +136,7 @@ that the time will be printed in Coordinated Universal Time.
 
 The programs start and end times will then be recorded in the STDOUT file.
 
-### Repeated runs (job arrays)
+### Repeated Runs (Job Arrays)
 
 If you are assessing a systems performance you will likely want to repeat the
 same calculation a number of times until you are satisfied with your estimate of
@@ -163,7 +163,7 @@ sbatch --array=1-10 script.sh
 sbatch --array=1-16:4%2 script.sh
 ```
 
-### Parametrising job arrays
+### Parametrising Job Arrays
 
 One particularly powerful way to use job arrays is through parametrising the
 individual tasks. For example, this could be used to sweep over a set of input
@@ -210,7 +210,7 @@ executed in your jobs (one in each job)
 - `my_program -n 8 -o output_42_8`
 - `my_program -n 12 -o output_42_12`
 
-### Using scratch space
+### Using Scratch Space
 
 Most HPC systems will offer some sort of fast, temporal and typically on-node,
 storage such as NVMe SSDs. In calculations where reading or writing data is a
