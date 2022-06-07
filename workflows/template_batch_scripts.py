@@ -81,7 +81,7 @@ scripts = [
             'container_command': (
                 'train_vae_model.py '
                 '--json_config_file VeryDeepVAE_32x32x32.json '
-                '--nifti_dir ./data --output_dir ./output'
+                '--nifti_dir ./data --output_dir ./output_$job_id'
             )
         }
     ),
@@ -99,7 +99,7 @@ scripts = [
             'container_command': (
                 'train_vae_model.py '
                 '--json_config_file VeryDeepVAE_64x64x64.json '
-                '--nifti_dir ./data --output_dir ./output'
+                '--nifti_dir ./data --output_dir ./output_$job_id'
             )
         }
     ),
@@ -117,7 +117,7 @@ scripts = [
             'container_command': (
                 'train_vae_model.py '
                 '--json_config_file VeryDeepVAE_128x128x128.json '
-                '--nifti_dir ./data --output_dir ./output'
+                '--nifti_dir ./data --output_dir ./output_$job_id'
             )
         }
     ),

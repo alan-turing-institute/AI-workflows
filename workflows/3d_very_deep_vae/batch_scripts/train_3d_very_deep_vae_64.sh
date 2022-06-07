@@ -51,7 +51,7 @@ outputs="output_$job_id"
 # Singularity container
 container="3d_very_deep_vae.sif"
 # Singularity 'exec' command
-container_command="train_vae_model.py --json_config_file VeryDeepVAE_64x64x64.json --nifti_dir ./data --output_dir ./output"
+container_command="train_vae_model.py --json_config_file VeryDeepVAE_64x64x64.json --nifti_dir ./data --output_dir ./output_$job_id"
 # Command to execute
 run_command="singularity exec
   --nv
