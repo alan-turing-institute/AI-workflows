@@ -1,5 +1,5 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "generic/ubuntu2004"
+  config.vm.box = "generic/ubuntu2204"
 
   config.vm.hostname = "apptainer"
 
@@ -16,12 +16,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-    # Python 3.10
-    add-apt-repository ppa:deadsnakes/ppa
-    apt-get update
-    apt install -y python3.10
-    ln -s /usr/bin/python /usr/bin/python3.10
-
     # Apptainer installation instructions
     # https://github.com/apptainer/apptainer/blob/main/INSTALL.md
     #
