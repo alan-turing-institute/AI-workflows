@@ -68,7 +68,7 @@ scripts = [
         }
     ),
     Script(
-        name='3d_very_deep_vae_32.sh',
+        name='train_3d_very_deep_vae_32.sh',
         path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
@@ -86,7 +86,7 @@ scripts = [
         }
     ),
     Script(
-        name='3d_very_deep_vae_64.sh',
+        name='train_3d_very_deep_vae_64.sh',
         path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
@@ -104,7 +104,7 @@ scripts = [
         }
     ),
     Script(
-        name='3d_very_deep_vae_128.sh',
+        name='train_3d_very_deep_vae_128.sh',
         path=Path('3d_very_deep_vae/batch_scripts/'),
         mapping={
             'nodes': '1',
