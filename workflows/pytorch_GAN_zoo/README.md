@@ -224,28 +224,26 @@ singularity exec --nv pytorch_GAN_zoo.sif eval.py visualization --np_vis -d outp
 
 ## Running on HPC
 
-If you want to do repeated training runs (for example benchmarking) you can use
-the `-n` flag to set the output directory. This will prevent repeat runs of the
-same model and dataset from overwriting each other.
-
-The configuration files generated using `datasets.py` include relative paths to
-the data sets. The relative location of the datasets must therefore be the same
-when training.
-
-On HPC you will most likely want to move the datasets to take advantage of
-high-speed scratch disks. It is therefore most convenient to copy the
-configuration file and dataset to scratch space, bind that space and use `--pwd`
-flag to change to that directory inside the container.
-
 The [`batch_scripts`](./batch_scripts) directory contains template Slurm batch
 scripts for training models on the [CelebA](batch_scripts/train_celeba.sh),
 [CIFAR-10](batch_scripts/train_cifar10.sh) and [DTD](batch_scripts/train_dtd.sh)
-datasets. These templates assume that data directories and configuration files
-are named as those created above. They demonstrate the advice for running
-on HPC explained [here](../../hpc.md)
+datasets.
 
-To submit a job use `sbatch` with the `--array` flag. For example
+These templates assume that data directories and configuration files are named
+as those created above. They demonstrate the advice for running on HPC explained
+[here](../../hpc.md). This includes using scratch space, parametrising output
+file names and supporting job arrays.
+
+To submit a job, complete a template filling in placeholders (beginning with
+`%`) with values appropriate for the platform you are using. Use `sbatch` to
+submit a job. For example
 
 ```bash
-sbatch --array=1 train_celeba.sh
+sbatch train_celeba.sh
+```
+
+Or as a job array
+
+```bash
+sbatch --array=1-5%2 train_celeba.sh
 ```
