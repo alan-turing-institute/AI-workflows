@@ -98,3 +98,29 @@ For example, with the example configuration and synthetic data set above
 ```bash
 singularity exec --nv 3d_very_deep_vae.sif train_vae_model.py --json_config_file VeryDeepVAE_32x32x32.json --nifti_dir ./data --output_dir ./output
 ```
+
+## Running on HPC
+
+The [`batch_scripts`](./batch_scripts) directory contains template Slurm batch
+scripts for running the `train_vae_model.py` script. These examples use a
+synthetic dataset as produced above. There is one example for each of the
+three configurations (output resolutions) created above.
+
+These templates assume that data directories and configuration files are named
+as those created above. They demonstrate the advice for running on HPC explained
+[here](../../hpc.md). This includes using scratch space, parametrising output
+file names and supporting job arrays.
+
+To submit a job, complete a template filling in placeholders (beginning with
+`%`) with values appropriate for the platform you are using. Use `sbatch` to
+submit a job. For example
+
+```bash
+sbatch train_3d_very_deep_vae_32.sh
+```
+
+Or as a job array
+
+```bash
+sbatch --array=1-5%2 train_3d_very_deep_vae_32.sh
+```
