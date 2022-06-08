@@ -49,7 +49,7 @@ for resolution, wall_time in [
     ('64', '10:00:00'),
     ('128', '2-00:00:00')
 ]:
-    config = 'VeryDeepVAE_' + 'x'.join(resolution*3) + '.json'
+    config = 'VeryDeepVAE_' + 'x'.join([resolution]*3) + '.json'
 
     name = f'train_3d_very_deep_vae_{resolution}.sh'
     path = Path('3d_very_deep_vae/batch_scripts/')
@@ -63,10 +63,12 @@ for resolution, wall_time in [
         'container': '3d_very_deep_vae.sif',
         'container_command': (
             'train_vae_model.py '
-            '--json_config_file {config} '
+            f'--json_config_file {config} '
             '--nifti_dir ./data --output_dir ./output_$job_id'
         )
     }
+
+    scripts.append(Script(name, path, mapping))
 
 
 # Read batch script template
