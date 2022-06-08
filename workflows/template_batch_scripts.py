@@ -15,118 +15,65 @@ class MyTemplate(Template):
     delimiter = '%'
 
 
-scripts = [
-    Script(
-        name='train_celeba.sh',
-        path=Path('pytorch_GAN_zoo/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '3-00:00:00',
-            'job_name': 'pytorch_gan_zoo_celeba',
-            'gpus': '1',
-            'inputs': 'celeba_cropped config_celeba_cropped.json',
-            'outputs': 'output_networks/celeba_cropped_$job_id',
-            'container': 'pytorch_GAN_zoo.sif',
-            'container_command': (
-                'train.py PGAN -c config_celeba_cropped.json '
-                '--restart --no_vis -n celeba_cropped_$job_id'
-            )
-        }
-    ),
-    Script(
-        name='train_cifar10.sh',
-        path=Path('pytorch_GAN_zoo/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '2-00:00:00',
-            'job_name': 'pytorch_gan_zoo_cifar10',
-            'gpus': '1',
-            'inputs': 'cifar10 config_cifar10.json',
-            'outputs': 'output_networks/cifar10_$job_id',
-            'container': 'pytorch_GAN_zoo.sif',
-            'container_command': (
-                'train.py PGAN -c config_cifar10.json '
-                '--restart --no_vis -n cifar10_$job_id'
-            )
-        }
-    ),
-    Script(
-        name='train_dtd.sh',
-        path=Path('pytorch_GAN_zoo/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '6-00:00:00',
-            'job_name': 'pytorch_gan_zoo_dtd',
-            'gpus': '1',
-            'inputs': 'dtd config_dtd.json',
-            'outputs': 'output_networks/dtd_$job_id',
-            'container': 'pytorch_GAN_zoo.sif',
-            'container_command': (
-                'train.py PGAN -c config_dtd.json '
-                '--restart --no_vis -n dtd_$job_id'
-            )
-        }
-    ),
-    Script(
-        name='train_3d_very_deep_vae_32.sh',
-        path=Path('3d_very_deep_vae/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '02:00:00',
-            'job_name': '3d_very_deep_vae_32',
-            'gpus': '1',
-            'inputs': 'data VeryDeepVAE_32x32x32.json',
-            'outputs': 'output_$job_id',
-            'container': '3d_very_deep_vae.sif',
-            'container_command': (
-                'train_vae_model.py '
-                '--json_config_file VeryDeepVAE_32x32x32.json '
-                '--nifti_dir ./data --output_dir ./output_$job_id'
-            )
-        }
-    ),
-    Script(
-        name='train_3d_very_deep_vae_64.sh',
-        path=Path('3d_very_deep_vae/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '10:00:00',
-            'job_name': '3d_very_deep_vae_64',
-            'gpus': '1',
-            'inputs': 'data VeryDeepVAE_64x64x64.json',
-            'outputs': 'output_$job_id',
-            'container': '3d_very_deep_vae.sif',
-            'container_command': (
-                'train_vae_model.py '
-                '--json_config_file VeryDeepVAE_64x64x64.json '
-                '--nifti_dir ./data --output_dir ./output_$job_id'
-            )
-        }
-    ),
-    Script(
-        name='train_3d_very_deep_vae_128.sh',
-        path=Path('3d_very_deep_vae/batch_scripts/'),
-        mapping={
-            'nodes': '1',
-            'wall_time': '2-00:00:00',
-            'job_name': '3d_very_deep_vae_128',
-            'gpus': '1',
-            'inputs': 'data VeryDeepVAE_128x128x128.json',
-            'outputs': 'output_$job_id',
-            'container': '3d_very_deep_vae.sif',
-            'container_command': (
-                'train_vae_model.py '
-                '--json_config_file VeryDeepVAE_128x128x128.json '
-                '--nifti_dir ./data --output_dir ./output_$job_id'
-            )
-        }
-    ),
-]
+scripts: list[Script] = []
+# Pytorch GAN Zoo batch templates
+for dataset, wall_time in [
+    ('celeba', '3-00:00:00'),
+    ('cifar10', '2-00:00:00'),
+    ('dtd', '6-00:00:00')
+]:
+    data_dir = 'celeba_cropped' if dataset == 'celeba' else dataset
+    config = f'config_{data_dir}.json'
+
+    name = f'train_{dataset}.sh'
+    path = Path('pytorch_GAN_zoo/batch_scripts/')
+    mapping = {
+        'nodes': '1',
+        'wall_time': wall_time,
+        'job_name': f'pytorch_gan_zoo_{dataset}',
+        'gpus': '1',
+        'inputs': f'{data_dir} {config}',
+        'outputs': f'output_networks/{data_dir}_$job_id',
+        'container': 'pytorch_GAN_zoo.sif',
+        'container_command': (
+            f'train.py PGAN -c {config} '
+            f'--restart --no_vis -n {data_dir}_$job_id'
+        )
+    }
+
+    scripts.append(Script(name, path, mapping))
+
+# 3D Very Deep VAE batch templates
+for resolution, wall_time in [
+    ('32', '02:00:00'),
+    ('64', '10:00:00'),
+    ('128', '2-00:00:00')
+]:
+    config = 'VeryDeepVAE_' + 'x'.join(resolution*3) + '.json'
+
+    name = f'train_3d_very_deep_vae_{resolution}.sh'
+    path = Path('3d_very_deep_vae/batch_scripts/')
+    mapping = {
+        'nodes': '1',
+        'wall_time': wall_time,
+        'job_name': f'3d_very_deep_vae_{resolution}',
+        'gpus': '1',
+        'inputs': f'data {config}',
+        'outputs': 'output_$job_id',
+        'container': '3d_very_deep_vae.sif',
+        'container_command': (
+            'train_vae_model.py '
+            '--json_config_file {config} '
+            '--nifti_dir ./data --output_dir ./output_$job_id'
+        )
+    }
 
 
+# Read batch script template
 with open('batch_template.sh', 'r', encoding='utf8') as f:
     template = MyTemplate(f.read())
 
+# Write batch scripts
 for script in scripts:
     script_path = script.path / script.name
     with open(script_path, 'w', encoding='utf8') as f:
