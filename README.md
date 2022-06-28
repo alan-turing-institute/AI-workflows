@@ -37,3 +37,12 @@ vagrant ssh
 ```
 
 and will find this project mounted at `/vagrant/`
+
+### Local testing with WSL2 and VirtualBox
+If using Windows Subsystem for Linux on a host Windows machine, there are two minor requirements in order to provision with VirtualBox. The first is to create a local port forward to allow ssh to `0.0.0.0` over `localhost`. This can be achieved with a handy plugin: [VirtualboxWSL2](https://github.com/Karandash8/virtualbox_WSL2), installed with
+
+```bash
+vagrant plugin install virtualbox_WSL2
+```
+
+Second, a [caveat](https://github.com/hashicorp/vagrant/issues/10576) of file system support. For synced folders (where project files shall be mounted at `/vagrant/`) vagrant will expect to find a DrvFs (`/mnt/c/`) file system. The project file location can be updated in the [Vagrantfile](.Vagrantfile) or rather move the repo to a windows mount, e.g. `/mnt/c/`, `/mnt/d`, etc.
