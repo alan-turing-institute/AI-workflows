@@ -8,27 +8,27 @@ import os
 
 def parse_args(args=None):
     """parse the arguments."""
-    parser = argparse.ArgumentParser(description='Generate val dataset')
+    parser = argparse.ArgumentParser(description="Generate val dataset")
 
     parser.add_argument(
         "--input_image_dir",
         type=str,
         required=True,
-        help="Input directory to training dataset images."
+        help="Input directory to training dataset images.",
     )
 
     parser.add_argument(
         "--input_label_dir",
         type=str,
         required=True,
-        help="Input directory to training dataset labels."
+        help="Input directory to training dataset labels.",
     )
 
     parser.add_argument(
         "--output_dir",
         type=str,
         required=True,
-        help="Ouput directory to val dataset."
+        help="Ouput directory to val dataset.",
     )
 
     parser.add_argument(
@@ -36,7 +36,7 @@ def parse_args(args=None):
         type=int,
         required=False,
         default=10,
-        help="Percentage of training dataset for generating val dataset"
+        help="Percentage of training dataset for generating val dataset",
     )
 
     return parser.parse_args(args)
@@ -78,10 +78,14 @@ def main(args=None):
 
     for img_name in val_img_list:
         label_name = img_name.split(".")[0] + ".txt"
-        os.rename(os.path.join(args.input_image_dir, img_name),
-                  os.path.join(target_img_path, img_name))
-        os.rename(os.path.join(args.input_label_dir, label_name),
-                  os.path.join(target_label_path, label_name))
+        os.rename(
+            os.path.join(args.input_image_dir, img_name),
+            os.path.join(target_img_path, img_name),
+        )
+        os.rename(
+            os.path.join(args.input_label_dir, label_name),
+            os.path.join(target_label_path, label_name),
+        )
 
 
 if __name__ == "__main__":

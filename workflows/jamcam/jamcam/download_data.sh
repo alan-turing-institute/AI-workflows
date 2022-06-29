@@ -1,4 +1,7 @@
-#!/bin/python
+#!/bin/bash
+
+# ensure directory exists
+mkdir /workspace/data/
 
 # download ground truth data
 curl https://zenodo.org/record/6472731/files/task_jamcams_groundtruth.zip?download=1 -o workspace/data/task_jamcams_groundtruth.zip
