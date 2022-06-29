@@ -107,6 +107,8 @@ while [ -n "$1" ]; do
 	--eval) func_eval ;;
 	--vis) func_vis ;;
 	--export) func_export_model ;;
+	--all) download && func_verify && func_gen_valid && func_convert_data && func_train && func_eval && \
+		   func_vis && func_export_model ;;
 	*) echo "Option $1 not recognized" ;;
 
 	esac
