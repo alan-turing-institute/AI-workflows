@@ -1,9 +1,9 @@
 #!/bin/bash
 
-CONTAINER="<CONTAINER_NAME>"
-SCRATCH_PATH="/tmp/"
+CONTAINER=$1
+BENCHMARK_NAME=$2
 
-case $1 in
+case ${BENCHMARK_NAME} in
 "MNIST_torch" )
     DATASET_NAME="MNIST";;
 "MNIST_tf_keras" )
@@ -20,7 +20,6 @@ case $1 in
 esac
 
 mkdir -p "${STORAGE_PATH}${SLURM_JOB_NAME}"
-mkdir -p "${SCRATCH_PATH}${SLURM_JOB_NAME}"
 
 if [[ ! -d ${STORAGE_PATH}"datasets/${DATASET_NAME}" ]]
 then
