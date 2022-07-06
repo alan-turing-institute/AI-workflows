@@ -1,0 +1,5 @@
+# Suggested data directory
+data/
+
+# Configuration files
+VeryDeepVAE*.json

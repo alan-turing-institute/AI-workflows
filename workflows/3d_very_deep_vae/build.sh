@@ -1,12 +1,12 @@
 #!/bin/bash
 
 _UID=$(id -u)
-NAME="pytorch_GAN_zoo"
+NAME="3d_very_deep_vae"
 DEF_FILE="$NAME.def"
 SIF_FILE="$NAME.sif"
 
-TORCH_VERSION="1.9.1"
-CUDA_VERSION="11.1"
+TORCH_VERSION="1.10.2"
+CUDA_VERSION="11.3"
 TORCH_NAME="pytorch_${TORCH_VERSION}_cu_$CUDA_VERSION"
 TORCH_DEF_FILE="$TORCH_NAME.def"
 TORCH_SIF_FILE="$TORCH_NAME.sif"

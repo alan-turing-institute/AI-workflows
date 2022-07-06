@@ -4,3 +4,6 @@
 [submodule "workflows/sciml-bench/sciml-bench"]
 	path = workflows/sciml-bench/sciml-bench
 	url = https://github.com/stfc-sciml/sciml-bench.git
+[submodule "workflows/3d_very_deep_vae"]
+	path = workflows/3d_very_deep_vae/3d_very_deep_vae
+	url = https://github.com/high-dimensional/3d_very_deep_vae.git

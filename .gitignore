@@ -3,3 +3,6 @@
 
 # Vagrant directory
 .vagrant
+
+# Generated def files
+base_containers/**/*.def

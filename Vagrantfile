@@ -1,7 +1,7 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "generic/ubuntu2004"
+  config.vm.box = "generic/ubuntu2204"
 
-  config.vm.hostname = "singularity"
+  config.vm.hostname = "apptainer"
 
   config.vm.synced_folder "./", "/vagrant"
 
@@ -9,37 +9,21 @@ Vagrant.configure("2") do |config|
     vb.memory = 8192
     vb.cpus = 4
   end
-  config.vm.provider :libvirt do |libvirt|
+  config.vm.provider "libvirt" do |libvirt, override|
     libvirt.cpus = 4
     libvirt.memory = 8192
+    override.vm.synced_folder "./", "/vagrant", type: "nfs", nfs_udp: false
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-    # Install singularity dependencies
-    apt-get update
-    apt-get install -y \
-    build-essential \
-    libssl-dev \
-    uuid-dev \
-    libgpgme11-dev \
-    squashfs-tools \
-    libseccomp-dev \
-    wget \
-    pkg-config \
-    git \
-    cryptsetup \
-    golang
-    apt-get clean
-    # Get singularity release
-    export VERSION=3.8.0
-    wget https://github.com/hpcng/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz
-    tar -xzf singularity-${VERSION}.tar.gz
-    # Build/install singularity
-    cd singularity-${VERSION}
-    ./mconfig
-    make -C builddir
-    make -C builddir install
-    cd ../
-    rm -r singularity-${VERSION} singularity-${VERSION}.tar.gz
+    # Install Apptainer
+    export VERSION=1.0.2
+    wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer_${VERSION}_amd64.deb
+    apt-get install -y ./apptainer_${VERSION}_amd64.deb
+    rm -r apptainer_${VERSION}_amd64.deb
+
+    # Configure fakeroot
+    touch /etc/setuid /etc/setgid
+    usermod --add-subuids 100000-165535 --add-subgids 100000-165535 vagrant
   SHELL
 end

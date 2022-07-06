@@ -33,20 +33,45 @@ display
 - Processor and memory clock speeds in MHz
 - PCIe throughput input (Rx) and output (Tx) in MB/s
 
-Every 300 seconds this information will be saved to a file named using the
-Slurm array job and task IDs as discussed in [the Slurm
-section](#parametrising-job-arrays)
-
-This job is sent to the background and stopped after the `$COMMAND` has run.
+This job is sent to the background and stopped after the `$command` has run.
 
 ```bash
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}".txt &
-GPU_WATCH_PID=$!
+nvidia-smi dmon -o TD -s puct -d 1 > dmon.txt &
+gpu_watch_pid=$!
 
-$COMMAND
+$command
 
-kill $GPU_WATCH_PID
+kill $gpu_watch_pid
 ```
+
+## Modules
+
+HPC systems will almost certainly have a module system which helps manage and
+isolate the many (potentially conflicting) packages users want. Although
+singularity allows us to package most workflow requirements inside a container
+image, using GPUs requires a compatible set of driver and library packages on the
+host. You may, therefore, need to load the appropriate modules to run the
+workflows.
+
+There are two common module systems,
+[Lmod](https://lmod.readthedocs.io/en/latest/index.html) and [Environment
+Modules](https://modules.readthedocs.io/en/latest/). For a user the differences
+between the two are not important as the commands are the same.
+
+To list the available modules
+
+```bash
+module av
+```
+
+And to load a particular module
+
+```bash
+module load ...
+```
+
+When submitting batch jobs any `module load` commands should be placed in your
+batch script.
 
 ## Slurm
 
@@ -89,7 +114,7 @@ Submitted batch job 43
 Or in a batch script
 
 ```bash
-##Slurm --gres=gpu:1
+#SBATCH --gres=gpu:1
 ```
 
 ### Benchmarking
@@ -101,7 +126,7 @@ program.
 
 ```bash
 date --iso-8601=seconds --utc
-$COMMAND
+# Commands to time
 date --iso-8601=seconds --utc
 ```
 
@@ -111,10 +136,10 @@ that the time will be printed in Coordinated Universal Time.
 
 The programs start and end times will then be recorded in the STDOUT file.
 
-### Repeated runs (job arrays)
+### Repeated Runs (Job Arrays)
 
 If you are assessing a systems performance you will likely want to repeat the
-same calculation a number of times until you are satisfied with you estimate of
+same calculation a number of times until you are satisfied with your estimate of
 mean performance. It would be possible to simply repeatedly submit the same job
 and many people are tempted to engineer their own scripts to do so. However,
 Slurm provides a way to submit groups of jobs that you will most likely find
@@ -138,7 +163,7 @@ sbatch --array=1-10 script.sh
 sbatch --array=1-16:4%2 script.sh
 ```
 
-### Parametrising job arrays
+### Parametrising Job Arrays
 
 One particularly powerful way to use job arrays is through parametrising the
 individual tasks. For example, this could be used to sweep over a set of input
@@ -150,21 +175,21 @@ variables
 
 | environment variable     | value                    |
 |--------------------------|--------------------------|
-| `Slurm_ARRAY_JOB_ID`     | job id of the first task |
-| `Slurm_ARRAY_TASK_ID`    | current task index       |
-| `Slurm_ARRAY_TASK_COUNT` | total number of tasks    |
-| `Slurm_ARRAY_TASK_MAX`   | the highest index value  |
-| `Slurm_ARRAY_TASK_MIN`   | the lowest index value   |
+| `SLURM_ARRAY_JOB_ID`     | job id of the first task |
+| `SLURM_ARRAY_TASK_ID`    | current task index       |
+| `SLURM_ARRAY_TASK_COUNT` | total number of tasks    |
+| `SLURM_ARRAY_TASK_MAX`   | the highest index value  |
+| `SLURM_ARRAY_TASK_MIN`   | the lowest index value   |
 
 For example, if you submitted a job array with the command
 
 ```bash
-$ sbatch --array=0-12:4 script.sh
+$ sbatch --array=0-12%4 script.sh
 Submitted batch job 42
 ```
 
 then the job id of the first task is `42` and the four jobs will have
-`Slurm_ARRAY_JOB_ID`, `Slurm_ARRAY_TASK_ID` pairs of
+`SLURM_ARRAY_JOB_ID`, `SLURM_ARRAY_TASK_ID` pairs of
 
 - 42, 0
 - 42, 4
@@ -174,7 +199,7 @@ then the job id of the first task is `42` and the four jobs will have
 The environment variables can be used in your commands. For example
 
 ```bash
-my_program -n $Slurm_ARRAY_TASK_ID -o output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+my_program -n $SLURM_ARRAY_TASK_ID -o output_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 ```
 
 with the same `sbatch` command as before, the following commands would be
@@ -185,139 +210,81 @@ executed in your jobs (one in each job)
 - `my_program -n 8 -o output_42_8`
 - `my_program -n 12 -o output_42_12`
 
-### Using scratch space
+### Using Scratch Space
 
 Most HPC systems will offer some sort of fast, temporal and typically on-node,
 storage such as NVMe SSDs. In calculations where reading or writing data is a
 bottleneck, using this storage will be key to optimising performance.
 
-The details of this scratch space will differ between HPC system and changes
-will need to be made when transferring workflows between systems. However, a
-combination of templating and singularity binds can make these adjustments less
-tedious and more robust.
+The location of scratch space will differ between HPC systems so it is
+unavoidable to have some platform specific data in batch scripts. However, with
+a sensible template, taking advantage of Singularity's `--bind` and `--pwd`
+flags these adjustments can be made less tedious and more robust.
 
 The following snippet shows how this may be done.
 
 ```bash
-# Path to scratch disk on host
-HOST_SCRATCH_PATH=/scratch
-# Path to input data on host
-INPUT_DATA=/path/to/input/data
-# Get name of input data directory
-INPUT_DIR=$(basename $INPUT_DATA)
-# Path to place output data on host
-OUTPUT_DIR=/path/to/output/dir
+scratch_host="%scratch_host"
+scratch="$scratch_host/$SLURM_JOB_ID"
+inputs="%inputs"
+outputs="%outputs"
 
-# Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${Slurm_JOB_NAME}_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
-mkdir -p $JOB_SCRATCH_PATH
-
-# Copy input data to scratch directory
-cp -r $INPUT_DATA $JOB_SCRATCH_PATH
-
-# Make output data directory
-mkdir -p $JOB_SCRATCH_PATH/output
+# Copy inputs to scratch
+mkdir -p "$scratch"
+for item in $inputs; do
+    echo "Copying $item to scratch"
+    cp -r "$item" "$scratch"
+done
 
 # Run the application
-singularity run --bind $JOB_SCRATCH_PATH:/scratch_mount --nv my_container.sif --input /scratch_mount/$INPUT_DIR --output /scratch_mount/output/
+singularity exec \
+--nv \
+--bind $scratch:/scratch_mount \
+--pwd /scratch_mount
+%container %container_command
 
 # Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
+for item in $outputs; do
+    echo "Copying $item from scratch"
+    cp -r "$scratch/$item" ./
+done
 
 # Clean up
-rm -rf $JOB_SCRATCH_PATH
+rm -rf "$scratch"
 ```
 
+`%scratch_host` is the path to scratch directory on host, for example
+`/scratch`. `%inputs` is a *space separated* list of files and directories
+needed for the job, for example`input_file.txt data_directory`.  `%outputs` is
+also a space separated list of files and directories. These are files and
+directories produced by the job that should be kept.
+
+The input files and directories declared are copied to `$scratch`. This
+directory is then mounted in the container at `/scratch_mount` with the `--bind
+$scratch:/scratch_mount` argument. The `--pwd /scratch_mount` flag ensures that
+the command (`%container_command`) is executed in the `/scratch_mount`
+directory inside the container, _i.e._ where the input data is. This way the
+input data is both stored on the fast scratch storage and visible to the
+container process.
+
+Note, simply changing directory to `$scratch` before running singularity is
+unlikely to work. When Singularity is run inside of a users home directory the
+current working directory is mounted and used as the initial directory for the
+container process. Scratch space will almost certainly be outside of a users
+home directory, in which case the current working directory is not mounted and
+the initial directory inside the container is `/`.
+
 This example uses array job id and array task id to reduce the possibility of a
-name clash when creating a directory on the scratch disk and when copying
-outputs back.  Ideally each job will be given a scratch directory in a unique
-namespace so there is no possibility of file or directory names clashing
-between different jobs.
+name clash when using the scratch space. Ideally each job will be given a
+scratch directory in a unique namespace so there is no possibility of file or
+directory names clashing between different jobs, but this will not be the case
+on all HPC systems.
 
 ### Template
 
 Collecting the above tips, here is a template batch script that can be adapted
 to run these (or other) calculations on clusters with the Slurm scheduler.
 
-```bash
-#!/bin/bash
-
-##########
-# Slurm parameters
-##########
-
-# set the number of nodes
-#SBATCH --nodes=...
-
-# set max wallclock time
-#SBATCH --time=...
-
-# set name of job
-#SBATCH --job-name=...
-
-# set number of GPUs
-#SBATCH --gres=gpu:...
-
-##########
-# Job parameters
-##########
-
-# Path to scratch disk on host
-HOST_SCRATCH_PATH=...
-
-# Path to input data on host
-INPUT_DATA=...
-
-# Get name of input data directory
-INPUT_DIR=$(basename $INPUT_DATA)
-
-# Path to place output data on host
-OUTPUT_DIR=...
-
-# Define command to run
-COMMAND=singularity exec --nv --bind $JOB_SCRATCH_PATH:/scratch_mount ...
-
-##########
-# Prepare data and directories in scratch space
-##########
-
-# Create a directory on scratch disk for this job
-JOB_SCRATCH_PATH=$HOST_SCRATCH_PATH/${Slurm_JOB_NAME}_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
-mkdir -p $JOB_SCRATCH_PATH
-
-# Copy input data to scratch directory
-cp -r $INPUT_DATA $JOB_SCRATCH_PATH
-
-# Make output data directory
-mkdir -p $JOB_SCRATCH_PATH/output
-
-##########
-# Monitor and run the job
-##########
-
-# load modules (will be system dependent, may not be necessary)
-module purge
-module load singularity
-
-# Monitor GPU usage
-nvidia-smi dmon -o TD -s puct -d 300 > "dmon-${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}".txt &
-GPU_WATCH_PID=$!
-
-# Run command
-date --iso-8601=seconds --utc
-$COMMAND
-date --iso-8601=seconds --utc
-
-##########
-# Post job clean up
-##########
-
-# Stop nvidia-smi dmon process
-kill $GPU_WATCH_PID
-
-# Copy output from scratch
-cp -r $JOB_SCRATCH_PATH/output $OUTPUT_DIR/output_${Slurm_ARRAY_JOB_ID}_${Slurm_ARRAY_TASK_ID}
-
-# Clean up
-rm -rf $JOB_SCRATCH_PATH
-```
+[`batch_template.sh`](workflows/batch_template.sh) is a template batch script
+putting together all of the tips above. This template can be adapted to run the
+AI workflows. More complete examples are included alongside each workflow.
