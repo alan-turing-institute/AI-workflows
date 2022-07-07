@@ -1,6 +1,5 @@
 Bootstrap: docker
 From: nvidia/cuda:11.4.2-cudnn8-devel-ubuntu18.04
-Stage: spython-base
 
 %post
 
