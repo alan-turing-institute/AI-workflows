@@ -12,8 +12,6 @@ MLNX_VERSION=5.2-1.0.4.0
 python=3.7
 PYTHON_VERSION=${python}
 
-# Set default shell to /bin/bash
-#SHELL ["/bin/bash", "-cu"]
 
 TZ="Europe/London"
 
@@ -95,6 +93,3 @@ pip --no-cache-dir --disable-pip-version-check install mpi4py
 
 LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/openmpi:$LD_LIBRARY_PATH
 
-%environment
-
-%runscript
