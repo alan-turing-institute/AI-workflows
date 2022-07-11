@@ -6,6 +6,7 @@ A collections of portable, real-world AI workflows for testing and benchmarking
 
 - [Pytorch GAN zoo](./workflows/pytorch_GAN_zoo/)
 - [3D Very Deep VAE](./workflows/3d_very_deep_vae/)
+- [SciML Bench](./workflows/sciml-bench/)
 
 ## Running Workflows on HPC
 
