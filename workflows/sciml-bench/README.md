@@ -36,7 +36,8 @@ These scripts expect the datasets to be found in a `dataset/` subdirectory of th
 (where the script itself is found).
 
 
-### Fetching Datasets
+## Fetching Datasets
+
 
 Once the singularity container has been built, the datasets can be downloaded using the `get_data.sh` script:
 ```
