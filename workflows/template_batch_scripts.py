@@ -87,7 +87,7 @@ for benchmark, dataset, wall_time in [
         'job_name': f'sciml_{benchmark}',
         'gpus': '1',
         'inputs': f'datasets/{dataset}',
-        'outputs': f'output_$job_id',
+        'outputs': 'output_$job_id',
         'container': 'sciml-bench_cu11.sif',
         'container_command': (
             f'sciml-bench run {benchmark} '
