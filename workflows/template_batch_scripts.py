@@ -91,7 +91,7 @@ for benchmark, dataset, wall_time in [
         'container': 'sciml-bench_cu11.sif',
         'container_command': (
             f'sciml-bench run {benchmark} '
-            '--output_dir=./output_$job_id ' 
+            '--output_dir=./output_$job_id '
             f'--dataset_dir=/scratch_mount/{dataset}'
         )
     }
