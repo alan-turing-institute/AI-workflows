@@ -23,7 +23,7 @@ in your current working directory. The `ompi4.sif` container is just used as a b
 Only the `sciml-bench_cu11.sif` container is required to run the benchmarks.
 
 
-### Running containers
+## Running containers
 
 The singularity containers can be run according to the 
 usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/master/doc/usage.md) 
