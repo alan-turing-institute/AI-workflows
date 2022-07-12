@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     # Install Apptainer
-    export VERSION=1.0.2
+    export VERSION=1.0.3
     wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer_${VERSION}_amd64.deb
     apt-get install -y ./apptainer_${VERSION}_amd64.deb
     rm -r apptainer_${VERSION}_amd64.deb
