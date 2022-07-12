@@ -1,8 +1,8 @@
 # Sciml-bench
 
 This workflow containerises the [sciml-bench](https://github.com/stfc-sciml/sciml-bench) suite
-of benchmarks, with a configuration that is compatible with CUDA11. 
-SciMLBench is a benchmarking suite developed at STFC, 
+of benchmarks, with a configuration that is compatible with CUDA11.
+SciMLBench is a benchmarking suite developed at STFC,
 designed specifically for the AI for Science domain.
 
 ## Building
@@ -19,36 +19,39 @@ non-root user. If this is not supported on your system you can run the script as
 root.
 
 When the script is finished you will find the containers (`ompi4.sif` and `sciml-bench_cu11.sif`)
-in your current working directory. The `ompi4.sif` container is just used as a base image to build the `sciml-bench_cu11.sif` container. 
+in your current working directory. The `ompi4.sif` container is just used as a base image to build the `sciml-bench_cu11.sif` container.
 Only the `sciml-bench_cu11.sif` container is required to run the benchmarks.
-
 
 ## Fetching Datasets
 
-
 Once the singularity container has been built, the datasets can be downloaded using the sciml-bench `download` command:
+
 ```
 singularity run --nv sciml-bench_cu11.sif download <DATASET_NAME> --dataset_root_dir="datasets/"
 ```
-where the dataset name is one of {'MNIST', 'em_graphene_sim', 'dms_sim', 'slstr_cloud_ds1'}. Note that these dataset names are slightly different to the names of their corresponding benchmarks ({'MNIST_torch'/'MNIST_tf_keras', 'em_denoise', 'dms_structure', 'slstr_cloud'}).
 
+where the dataset name is one of {'MNIST', 'em_graphene_sim', 'dms_sim', 'slstr_cloud_ds1'}. Note that these dataset names are slightly different to the names of their corresponding benchmarks ({'MNIST_torch'/'MNIST_tf_keras', 'em_denoise', 'dms_structure', 'slstr_cloud'}).
 
 ## Running containers
 
-The benchmarks can be run from the singularity container according to the 
-usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md) 
+The benchmarks can be run from the singularity container according to the
+usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md)
 repository.
+
 ```
 singularity run --nv sciml-bench_cu11.sif run <BENCHMARK_NAME> --output_dir=<OUTPUT_DIRECTORY_NAME> --dataset_dir=/path/to/<DATASET_NAME>
 ```
-where benchmark and dataset names are chosen from the options listed in the above section on Fetching Datasets, and OUTPUT_DIRECTORY_NAME is the desired location to save outputs. 
 
+where benchmark and dataset names are chosen from the options listed in the above section on Fetching Datasets, and OUTPUT_DIRECTORY_NAME is the desired location to save outputs.
 
 ## Running containers on HPC
+
 Alternatively, [batch submission scripts](./batch_scripts/) have been provided that fit the [recommended template](https://github.com/alan-turing-institute/AI-workflows/blob/main/workflows/batch_template.sh).
 Submit these scripts using slurm as follows:
+
 ```
 sbatch /path/to/<SCRIPT NAME>.sh
 ```
-These scripts expect the datasets to be found in a `dataset/` subdirectory of the current working directory 
+
+These scripts expect the datasets to be found in a `dataset/` subdirectory of the current working directory
 (where the script itself is found).
