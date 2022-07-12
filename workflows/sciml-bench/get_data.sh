@@ -19,7 +19,6 @@ case ${BENCHMARK_NAME} in
     exit 1;;
 esac
 
-mkdir -p "${SLURM_JOB_NAME}"
 
 if [[ ! -d "datasets/${DATASET_NAME}" ]]
 then
