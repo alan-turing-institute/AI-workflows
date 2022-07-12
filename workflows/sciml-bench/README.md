@@ -5,7 +5,7 @@ of benchmarks, with a configuration that is compatible with CUDA11.
 SciMLBench is a benchmarking suite developed at STFC, 
 designed specifically for the AI for Science domain.
 
-### Build
+## Building
 
 To build the singularity containers use the build script in this directory.
 
