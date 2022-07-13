@@ -27,10 +27,15 @@ Only the `sciml-bench_cu11.sif` container is required to run the benchmarks.
 Once the singularity container has been built, the datasets can be downloaded using the sciml-bench `download` command:
 
 ```
-singularity run --nv sciml-bench_cu11.sif download <DATASET_NAME> --dataset_root_dir="datasets/"
+singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir="datasets/"
 ```
 
-where the dataset name is one of {'MNIST', 'em_graphene_sim', 'dms_sim', 'slstr_cloud_ds1'}. Note that these dataset names are slightly different to the names of their corresponding benchmarks ({'MNIST_torch'/'MNIST_tf_keras', 'em_denoise', 'dms_structure', 'slstr_cloud'}).
+| `<DATASET>`       | description                                      | required for benchmarks         |
+|-------------------|--------------------------------------------------|---------------------------------|
+| `MNIST`           | The MNIST database of handwritten digits         | `MNIST_torch`, `MNIST_tf_keras` |
+| `dms_sim`         | Simulated diffuse multiple scattering patterns   | `dms_structure`                 |
+| `em_graphene_sim` | Simulated electron microscopy images of graphene | `em_denoise`                    |
+| `slstr_cloud_ds1` | Sentinel-3 SLSTR satellite image data            | `slstr_cloud`                   |
 
 ## Running containers
 
