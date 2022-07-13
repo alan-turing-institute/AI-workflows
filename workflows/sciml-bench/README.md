@@ -40,7 +40,7 @@ singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=
 ## Running Benchmarks
 
 The benchmarks can be run from the singularity container according to the
-usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md)
+usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md#32-running-benchmarks)
 repository.
 
 ```
