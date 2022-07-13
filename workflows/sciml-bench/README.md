@@ -27,7 +27,7 @@ Only the `sciml-bench_cu11.sif` container is required to run the benchmarks.
 Once the singularity container has been built, the datasets can be downloaded using the sciml-bench `download` command:
 
 ```
-singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir="datasets/"
+singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=datasets/
 ```
 
 | `<DATASET>`       | description                                      | required for benchmarks         |
@@ -44,10 +44,41 @@ usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/scim
 repository.
 
 ```
-singularity run --nv sciml-bench_cu11.sif run <BENCHMARK_NAME> --output_dir=<OUTPUT_DIRECTORY_NAME> --dataset_dir=/path/to/<DATASET_NAME>
+singularity run --nv sciml-bench_cu11.sif run <BENCHMARK> --dataset_dir=datasets/<DATASET> --output_dir=<OUTPUT_DIRECTORY>
 ```
 
-where benchmark and dataset names are chosen from the options listed in the above section on Fetching Datasets, and OUTPUT_DIRECTORY_NAME is the desired location to save outputs.
+Benchmark and dataset names are in the table in the [previous section](#fetching-datasets).
+`OUTPUT_DIRECTORY` is the desired location to save outputs.
+
+### MNIST Torch
+
+```
+singularity run --nv sciml-bench_cu11.sif run MNIST_torch --dataset_dir=datasets/MNIST --output_dir=output/MNIST_torch
+```
+
+### MNIST Tensorflow Keras
+
+```
+singularity run --nv sciml-bench_cu11.sif run MNIST_tf_keras --dataset_dir=datasets/MNIST --output_dir=output/MNIST_tf_keras
+```
+
+### DMS Structure
+
+```
+singularity run --nv sciml-bench_cu11.sif run dms_sim --dataset_dir=datasets/dms_structure --output_dir=output/dms_sim
+```
+
+### EM Denoise
+
+```
+singularity run --nv sciml-bench_cu11.sif run em_graphene_sim --dataset_dir=datasets/em_denoise --output_dir=output/em_graphene_sim
+```
+
+### SLSTR Cloud
+
+```
+singularity run --nv sciml-bench_cu11.sif run slstr_cloud_ds1 --dataset_dir=datasets/slstr_cloud --output_dir=output/slstr_cloud_ds1
+```
 
 ## Running Benchmarks on HPC
 
