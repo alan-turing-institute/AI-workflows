@@ -70,6 +70,34 @@ for resolution, wall_time in [
 
     scripts.append(Script(name, path, mapping))
 
+# SciML-Bench
+for benchmark, dataset, wall_time in [
+    ('MNIST_torch', 'MNIST', '01:00:00'),
+    ('MNIST_tf_keras', 'MNIST', '01:00:00'),
+    ('dms_structure', 'dms_sim', '08:00:00'),
+    ('em_denoise', 'em_graphene_sim', '12:00:00'),
+    ('slstr_cloud', 'slstr_cloud_ds1', '23:00:00')
+]:
+
+    name = f'sciml_{benchmark}.sh'
+    path = Path('sciml-bench/batch_scripts/')
+    mapping = {
+        'nodes': '1',
+        'wall_time': wall_time,
+        'job_name': f'sciml_{benchmark}',
+        'gpus': '1',
+        'inputs': f'datasets/{dataset}',
+        'outputs': 'output_$job_id',
+        'container': 'sciml-bench_cu11.sif',
+        'container_command': (
+            f'sciml-bench run {benchmark} '
+            '--output_dir=./output_$job_id '
+            f'--dataset_dir=/scratch_mount/{dataset}'
+        )
+    }
+
+    scripts.append(Script(name, path, mapping))
+
 
 # Read batch script template
 with open('batch_template.sh', 'r', encoding='utf8') as f:
