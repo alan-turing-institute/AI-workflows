@@ -37,7 +37,7 @@ singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=
 | `em_graphene_sim` | Simulated electron microscopy images of graphene | `em_denoise`                    |
 | `slstr_cloud_ds1` | Sentinel-3 SLSTR satellite image data            | `slstr_cloud`                   |
 
-## Running containers
+## Running Benchmarks
 
 The benchmarks can be run from the singularity container according to the
 usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md)
@@ -49,7 +49,7 @@ singularity run --nv sciml-bench_cu11.sif run <BENCHMARK_NAME> --output_dir=<OUT
 
 where benchmark and dataset names are chosen from the options listed in the above section on Fetching Datasets, and OUTPUT_DIRECTORY_NAME is the desired location to save outputs.
 
-## Running containers on HPC
+## Running Benchmarks on HPC
 
 Alternatively, [batch submission scripts](./batch_scripts/) have been provided that fit the [recommended template](https://github.com/alan-turing-institute/AI-workflows/blob/main/workflows/batch_template.sh).
 Submit these scripts using slurm as follows:
