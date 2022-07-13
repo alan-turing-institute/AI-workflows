@@ -30,7 +30,7 @@ benchmarks.
 Once the singularity container has been built, the datasets can be downloaded
 using the sciml-bench `download` command:
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=datasets/
 ```
 
@@ -47,7 +47,7 @@ The benchmarks can be run from the singularity container according to the
 usage instructions found in the [sciml-bench](https://github.com/stfc-sciml/sciml-bench/blob/2c5035d4ea57ee7d2cde8ef805b756fc2d061f92/doc/usage.md#32-running-benchmarks)
 repository.
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run <BENCHMARK> --dataset_dir=datasets/<DATASET> --output_dir=<OUTPUT_DIRECTORY>
 ```
 
@@ -56,31 +56,31 @@ Benchmark and dataset names are in the table in the [previous section](#fetching
 
 ### MNIST Torch
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run MNIST_torch --dataset_dir=datasets/MNIST --output_dir=output/MNIST_torch
 ```
 
 ### MNIST Tensorflow Keras
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run MNIST_tf_keras --dataset_dir=datasets/MNIST --output_dir=output/MNIST_tf_keras
 ```
 
 ### DMS Structure
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run dms_sim --dataset_dir=datasets/dms_structure --output_dir=output/dms_sim
 ```
 
 ### EM Denoise
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run em_graphene_sim --dataset_dir=datasets/em_denoise --output_dir=output/em_graphene_sim
 ```
 
 ### SLSTR Cloud
 
-```
+```bash
 singularity run --nv sciml-bench_cu11.sif run slstr_cloud_ds1 --dataset_dir=datasets/slstr_cloud --output_dir=output/slstr_cloud_ds1
 ```
 
