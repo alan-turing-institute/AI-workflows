@@ -31,7 +31,7 @@ Once the singularity container has been built, the datasets can be downloaded
 using the sciml-bench `download` command:
 
 ```bash
-singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=datasets/
+singularity run sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=datasets/
 ```
 
 | `<DATASET>`       | description                                      | required for benchmarks         |
