@@ -82,12 +82,26 @@ singularity run --nv sciml-bench_cu11.sif run slstr_cloud_ds1 --dataset_dir=data
 
 ## Running Benchmarks on HPC
 
-Alternatively, [batch submission scripts](./batch_scripts/) have been provided that fit the [recommended template](https://github.com/alan-turing-institute/AI-workflows/blob/main/workflows/batch_template.sh).
-Submit these scripts using slurm as follows:
+The [`batch_scripts`](./batch_scripts) directory contains template Slurm batch
+scripts for running each of the benchmarks.
 
-```
-sbatch /path/to/<SCRIPT NAME>.sh
+These scripts expect the datasets to be found in a `dataset/` subdirectory of
+the current working directory as they would be following the instructions above.
+
+They demonstrate the advice for running on HPC explained [here](../../hpc.md).
+This includes using scratch space, parametrising output file names and
+supporting job arrays.
+
+To submit a job, complete a template filling in placeholders (beginning with
+`%`) with values appropriate for the platform you are using. Use `sbatch` to
+submit a job. For example
+
+```bash
+sbatch sciml_dms_structure.sh
 ```
 
-These scripts expect the datasets to be found in a `dataset/` subdirectory of the current working directory
-(where the script itself is found).
+Or as a job array
+
+```bash
+sbatch --array=1-5%2 sciml_dms_structure.sh
+```
