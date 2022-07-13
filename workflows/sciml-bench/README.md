@@ -1,9 +1,10 @@
 # Sciml-bench
 
-This workflow containerises the [sciml-bench](https://github.com/stfc-sciml/sciml-bench) suite
-of benchmarks, with a configuration that is compatible with CUDA11.
-SciMLBench is a benchmarking suite developed at STFC,
-designed specifically for the AI for Science domain.
+This workflow containerises the
+[sciml-bench](https://github.com/stfc-sciml/sciml-bench) suite of benchmarks,
+with a configuration that is compatible with CUDA11.  SciMLBench is a
+benchmarking suite developed at STFC, designed specifically for the AI for
+Science domain.
 
 ## Building
 
@@ -18,13 +19,16 @@ support](https://sylabs.io/guides/main/user-guide/fakeroot.html) if you run as a
 non-root user. If this is not supported on your system you can run the script as
 root.
 
-When the script is finished you will find the containers (`ompi4.sif` and `sciml-bench_cu11.sif`)
-in your current working directory. The `ompi4.sif` container is just used as a base image to build the `sciml-bench_cu11.sif` container.
-Only the `sciml-bench_cu11.sif` container is required to run the benchmarks.
+When the script is finished you will find the containers (`ompi4.sif` and
+`sciml-bench_cu11.sif`) in your current working directory. The `ompi4.sif`
+container is just used as a base image to build the `sciml-bench_cu11.sif`
+container.  Only the `sciml-bench_cu11.sif` container is required to run the
+benchmarks.
 
 ## Fetching Datasets
 
-Once the singularity container has been built, the datasets can be downloaded using the sciml-bench `download` command:
+Once the singularity container has been built, the datasets can be downloaded
+using the sciml-bench `download` command:
 
 ```
 singularity run --nv sciml-bench_cu11.sif download <DATASET> --dataset_root_dir=datasets/
