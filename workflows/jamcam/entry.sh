@@ -1,7 +1,16 @@
 #!/bin/bash
+# ---
 # Entrypoint for jamcam workflow, requires execution within suitable container. See README
+# ---
 
-# %environment
+# ---
+# Comment out the below to skip directory creation for attaching workspace volume
+# ---
+# mkdir -p /workspace/data/ /workspace/specs/ /workspace/yolo_v4/specs/
+
+# ---
+#  Uncomment the below to override environment variables
+# ---
 # export USER_EXPERIMENT_DIR=/workspace/yolo_v4
 # export DATA_DOWNLOAD_DIR=/workspace/data
 # export SPECS_DIR=/workspace/specs
