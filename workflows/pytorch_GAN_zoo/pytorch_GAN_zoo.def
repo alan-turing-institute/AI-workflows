@@ -4,6 +4,7 @@ From: ../../base_containers/pytorch/pytorch_1.9.1_cu_11.1.sif
 # Global settings
 %files
     pytorch_GAN_zoo/ /
+    get_data.sh /pytorch_GAN_zoo/get_data
 
 %environment
     # Add pytorch GAN zoo directory to path
@@ -12,17 +13,14 @@ From: ../../base_containers/pytorch/pytorch_1.9.1_cu_11.1.sif
 %post
     apt-get -y update
 
-    # Add universe repository (necessary for python3-pip)
-    apt-get -y install software-properties-common
-    add-apt-repository -y -u universe
+    # Install convenience script dependencies
+    apt-get -y install wget
 
-    # Install python packages
-    apt-get -y install python3 python3-pip python3-venv
+    # Make convenience script executable
+    chmod a+x /pytorch_GAN_zoo/get_data
 
     # Make Python scripts executable
     cd /pytorch_GAN_zoo
-    pwd
-    ls
     for i in *.py; do sed -i "1s|^|#!/usr/bin/env python3\n|" $i; done
     chmod a+x *.py
 

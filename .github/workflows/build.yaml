@@ -13,50 +13,17 @@ jobs:
         with:
           submodules: true
 
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '^1.17.7'
-
       - name: Setup Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.10'
 
-      - name: Install Apptainer dependencies
-        run: |
-          # Apptainer installation instructions
-          # https://github.com/apptainer/apptainer/blob/main/INSTALL.md
-          #
-          # Install Apptainer dependencies
-          sudo apt-get update
-          sudo apt-get install -y \
-          build-essential \
-          libssl-dev \
-          uuid-dev \
-          libgpgme11-dev \
-          squashfs-tools \
-          libseccomp-dev \
-          wget \
-          pkg-config \
-          cryptsetup
-          sudo apt-get clean
-
       - name: Install Apptainer
         run: |
-          #
-          # Get Apptainer release
-          export VERSION=1.0.0
-          wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer-${VERSION}.tar.gz
-          tar -xzf apptainer-${VERSION}.tar.gz
-          #
-          # Build/install Apptainer
-          cd apptainer-${VERSION}
-          ./mconfig
-          make -C builddir
-          sudo make -C builddir install
-          cd ../
-          rm -r apptainer-${VERSION} apptainer-${VERSION}.tar.gz
+          export VERSION=1.0.2
+          wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer_${VERSION}_amd64.deb
+          sudo apt-get install -y ./apptainer_${VERSION}_amd64.deb
+          rm -r apptainer_${VERSION}_amd64.deb
 
       - name: Build pytorch GAN zoo
         working-directory: workflows/pytorch_GAN_zoo/

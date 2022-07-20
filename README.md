@@ -2,6 +2,17 @@
 
 A collections of portable, real-world AI workflows for testing and benchmarking
 
+## Workflows
+
+- [Pytorch GAN zoo](./workflows/pytorch_GAN_zoo/)
+- [3D Very Deep VAE](./workflows/3d_very_deep_vae/)
+- [SciML Bench](./workflows/sciml-bench/)
+
+## Running Workflows on HPC
+
+[hpc.md](./hpc.md) has advice on running the workflows on HPC systems. Each
+workflow also contains template Slurm batch scripts.
+
 ## Using Vagrant
 
 The included Vagrantfile can be used to build the examples if your system does

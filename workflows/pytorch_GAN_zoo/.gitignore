@@ -1,0 +1,9 @@
+# Dataset directories
+img_align_celeba/
+celeba_cropped/
+cifar-10-batches-py/
+cifar10/
+dtd/
+
+# Configuration files
+config*.json

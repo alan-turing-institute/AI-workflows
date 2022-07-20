@@ -4,9 +4,5 @@
 # Vagrant directory
 .vagrant
 
-# Downloaded Datasets
-datasets/*/*
-
-# Generated templates
-base_containers/pytorch/pytorch_1*
-base_containers/nvidia-tao/nvidia-tao_*
+# Generated def files
+base_containers/**/*.def
