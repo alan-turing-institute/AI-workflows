@@ -35,13 +35,13 @@ func_download(){
 func_verify(){
 	# env & dataset verification
 	echo "Verifying environment and data..."
-	python3 jamcam/verify.py
+	python3 verify.py
 }
 
 func_gen_valid(){
 	# 
 	echo "Generating validation dataset..."
-	python3 jamcam/generate_val_dataset.py \
+	python3 generate_val_dataset.py \
 				--input_image_dir="$DATA_DOWNLOAD_DIR/train/images" \
 				--input_label_dir="$DATA_DOWNLOAD_DIR/train/labels" \
 				--output_dir="$DATA_DOWNLOAD_DIR/val"
