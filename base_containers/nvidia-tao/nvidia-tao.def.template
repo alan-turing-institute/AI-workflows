@@ -2,17 +2,20 @@ Bootstrap: docker
 From: nvcr.io/nvidia/tao/tao-toolkit-tf:$version
 Stage: spython-base
 
-%post
-    pip3 install --no-cache-dir matplotlib>=3.2.2 numpy>=1.18.5 opencv-python-headless==4.5.3.56 Pillow>=7.1.2 PyYAML>=5.3.1 requests>=2.23.0 scipy>=1.4.1 torch>=1.7.0 torchvision>=0.8.1 tqdm>=4.41.0 pandas>=1.1.4 seaborn>=0.11.0 easydict
+%setup
+    mkdir /app
 
 %help
     This container provides nvidia-tao $version
 
-    This containers entry point is Python.
+    This containers entry point is entry.sh.
 
-    To Run a PyTorch script pass the scripts path as the argument:
+    To Run a command pass the scripts path as the argument:
 
-    apptainer run --nv container.sif my_script.py
+    apptainer run --nv container.sif --<from-option-list>
+
+%files
+    ../../jamcam/* /app
 
 %environment
 export USER_EXPERIMENT_DIR=/workspace/yolo_v4
@@ -21,6 +24,8 @@ export SPECS_DIR=/workspace/specs
 export LOCAL_SPECS_DIR=/workspace/yolo_v4/specs
 export LOCAL_PROJECT_DIR=/workspace
 
+%post
+    pip3 install --no-cache-dir matplotlib>=3.2.2 numpy>=1.18.5 opencv-python-headless==4.5.3.56 Pillow>=7.1.2 PyYAML>=5.3.1 requests>=2.23.0 scipy>=1.4.1 torch>=1.7.0 torchvision>=0.8.1 tqdm>=4.41.0 pandas>=1.1.4 seaborn>=0.11.0 easydict
 
 %runscript
-    /usr/bin/python3 $$@
+   exec /app/entry.sh "$$@"
