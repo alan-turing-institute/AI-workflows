@@ -1,0 +1,5 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/tao/tao-toolkit-tf:$version
+
+%help
+    This container provides nvidia-tao $version

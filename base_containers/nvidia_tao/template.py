@@ -9,16 +9,8 @@ class Spec(NamedTuple):
     name: str
 
 
-NAME = "nvidia-tao"
+base_name = "nvidia_tao"
 
-# See https://pytorch.org/get-started/previous-versions/
-# https://download.pytorch.org/whl/torch_stable.html
-# e.g.
-#   https download.pytorch.org/whl/torch_stable.html | grep 'torch-1.11.*cu11'
-
-# Supported PyTorch version specifications
-# For each version of torch the corresponding CUDA versions, torchvision
-# version and torchaudio version is declared
 tao_spec = {
     "3.21.11": Spec(
         name="v3.21.11-tf1.15.4-py3",
@@ -34,19 +26,19 @@ tao_spec = {
 
 def fill_template(version: str) -> str:
     """Complete def file template for a particular version"""
-    with open(f"{NAME}.def.template", "r", encoding="utf8") as f:
+    with open(f"{base_name}.def.template", "r", encoding="utf8") as f:
         template = Template(f.read())
 
-    mapping = {"version": version}
+    mapping = {"version": tao_spec[version].name}
 
     return template.substitute(mapping)
 
 
-def write_def(spec: Spec) -> None:
+def write_def(version: str) -> None:
     """Write a completed def file for a particular version"""
-    file_name = f"{NAME}_{spec[0]}.def"
+    file_name = f"{base_name}_{version}.def"
 
-    text = fill_template(spec[1].name)
+    text = fill_template(version)
 
     with open(file_name, "w", encoding="utf8") as f:
         f.write(text)
@@ -54,7 +46,7 @@ def write_def(spec: Spec) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Template Nvidia-tao definition files"
+        description="Template Nvidia Tao definition files"
     )
     parser.add_argument(
         "version",
@@ -69,12 +61,10 @@ def main() -> None:
 
     match (args.version):
         case ("all"):
-            for version in tao_spec.items():
+            for version in tao_spec.keys():
                 write_def(version)
-        case ("newest"):
-            print("not supported")
         case (_):
-            write_def((args.version, tao_spec[args.version]))
+            write_def(args.version)
 
 
 if __name__ == "__main__":

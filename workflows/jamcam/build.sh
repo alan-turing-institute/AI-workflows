@@ -1,16 +1,16 @@
 #!/bin/bash
 
 _UID=$(id -u)
-NAME="nvidia-tao"
+NAME="jamcam"
 DEF_FILE="$NAME.def"
 SIF_FILE="$NAME.sif"
 
 TAO_VERSION="3.21.11"
-TAO_NAME="nvidia-tao_$TAO_VERSION"
+TAO_NAME="nvidia_tao_$TAO_VERSION"
 TAO_DEF_FILE="$TAO_NAME.def"
 TAO_SIF_FILE="$TAO_NAME.sif"
 
-pushd ../../base_containers/nvidia-tao/ || exit
+pushd ../../base_containers/nvidia_tao/ || exit
 if ! [ -f $TAO_SIF_FILE ]; then
     if ! [ -f $TAO_DEF_FILE ]; then
         ./template.py $TAO_VERSION

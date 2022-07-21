@@ -1,5 +1,5 @@
-Bootstrap: docker
-From: nvcr.io/nvidia/tao/tao-toolkit-tf:v3.21.11-tf1.15.4-py3
+Bootstrap: localimage
+From: ../../base_containers/nvidia_tao/nvidia_tao_3.21.11.sif
 
 %files
     ./specs/ /workspace/specs/
